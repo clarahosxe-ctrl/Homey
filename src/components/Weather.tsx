@@ -1,23 +1,16 @@
 import { useEffect, useState } from 'react'
+import { DAY_SHORT } from '../lib/dates'
 import { useStored } from '../lib/storage'
 
 interface City { name: string; lat: number; lon: number }
-interface Forecast { temp: number; code: number; min: number; max: number; rain: number }
+interface Day { date: string; code: number; min: number; max: number; rain: number }
 
-const CODES: Record<number, [string, string]> = {
-  0: ['☀️', 'Ensoleillé'], 1: ['🌤️', 'Peu nuageux'], 2: ['⛅', 'Nuageux'], 3: ['☁️', 'Couvert'],
-  45: ['🌫️', 'Brouillard'], 48: ['🌫️', 'Brouillard'],
-  51: ['🌦️', 'Bruine'], 53: ['🌦️', 'Bruine'], 55: ['🌦️', 'Bruine'],
-  61: ['🌧️', 'Pluie'], 63: ['🌧️', 'Pluie'], 65: ['🌧️', 'Forte pluie'],
-  71: ['🌨️', 'Neige'], 73: ['🌨️', 'Neige'], 75: ['🌨️', 'Neige'],
-  80: ['🌦️', 'Averses'], 81: ['🌧️', 'Averses'], 82: ['⛈️', 'Fortes averses'],
-  95: ['⛈️', 'Orage'], 96: ['⛈️', 'Orage'], 99: ['⛈️', 'Orage'],
-}
-const describe = (c: number) => CODES[c] ?? ['🌡️', '—']
+const icon = (c: number) =>
+  c === 0 ? '☀️' : c <= 2 ? '🌤️' : c === 3 ? '☁️' : c <= 48 ? '🌫️' : c <= 57 ? '🌦️' : c <= 67 ? '🌧️' : c <= 77 ? '🌨️' : c <= 82 ? '🌦️' : '⛈️'
 
 export default function Weather() {
   const [city, setCity] = useStored<City>('city', { name: 'Paris', lat: 48.8566, lon: 2.3522 })
-  const [fc, setFc] = useState<Forecast | null>(null)
+  const [days, setDays] = useState<Day[] | null>(null)
   const [error, setError] = useState(false)
   const [editing, setEditing] = useState(false)
   const [query, setQuery] = useState('')
@@ -25,65 +18,61 @@ export default function Weather() {
   useEffect(() => {
     let cancelled = false
     setError(false)
-    const url =
+    fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${city.lat}&longitude=${city.lon}` +
-      `&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max` +
-      `&timezone=auto&forecast_days=1`
-    fetch(url)
+        `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=7`,
+    )
       .then((r) => r.json())
       .then((d) => {
         if (cancelled) return
-        setFc({
-          temp: Math.round(d.current.temperature_2m),
-          code: d.current.weather_code,
-          min: Math.round(d.daily.temperature_2m_min[0]),
-          max: Math.round(d.daily.temperature_2m_max[0]),
-          rain: d.daily.precipitation_probability_max[0] ?? 0,
-        })
+        setDays(d.daily.time.map((t: string, i: number) => ({
+          date: t,
+          code: d.daily.weather_code[i],
+          min: Math.round(d.daily.temperature_2m_min[i]),
+          max: Math.round(d.daily.temperature_2m_max[i]),
+          rain: d.daily.precipitation_probability_max[i] ?? 0,
+        })))
       })
       .catch(() => !cancelled && setError(true))
     return () => { cancelled = true }
-  }, [city])
+  }, [city.lat, city.lon])
 
   const search = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!query.trim()) return
     try {
       const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=fr`)
-      const d = await r.json()
-      const hit = d.results?.[0]
-      if (hit) {
-        setCity({ name: hit.name, lat: hit.latitude, lon: hit.longitude })
-        setEditing(false)
-        setQuery('')
-      }
-    } catch {
-      setError(true)
-    }
+      const hit = (await r.json()).results?.[0]
+      if (hit) { setCity({ name: hit.name, lat: hit.latitude, lon: hit.longitude }); setEditing(false); setQuery('') }
+    } catch { setError(true) }
   }
 
-  const [icon, label] = fc ? describe(fc.code) : ['…', 'Chargement']
-
   return (
-    <div className="weather">
-      <div className="weather-main">
-        <span className="weather-icon" aria-hidden>{error ? '📡' : icon}</span>
-        <div>
-          <div className="weather-temp">{fc ? `${fc.temp}°` : '–'}</div>
-          <div className="sub">{error ? 'Météo indisponible' : label}</div>
-        </div>
+    <section className="card-flat">
+      <div className="row between">
+        {editing ? (
+          <form className="row" onSubmit={search}>
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ville…" autoFocus />
+            <button className="btn small primary">OK</button>
+          </form>
+        ) : (
+          <button className="link" onClick={() => setEditing(true)}>📍 {city.name}</button>
+        )}
       </div>
-      {fc && !error && (
-        <div className="sub">↓ {fc.min}° · ↑ {fc.max}° · 💧 {fc.rain} %</div>
+      {error && <p className="sub">Météo indisponible pour le moment.</p>}
+      {!error && (
+        <div className="wk">
+          {(days ?? Array.from({ length: 7 }, () => null)).map((d, i) => (
+            <div key={i} className="wk-day">
+              <span className="sub">{d ? `${DAY_SHORT[new Date(d.date + 'T00:00').getDay()]} ${d.date.slice(8)}` : '…'}</span>
+              <span className="wk-icon">{d ? icon(d.code) : '·'}</span>
+              <strong>{d ? `${d.max}°` : '–'}</strong>
+              <span className="sub">{d ? `${d.min}°` : ''}</span>
+              {d && d.rain >= 40 && <span className="rain">💧{d.rain}%</span>}
+            </div>
+          ))}
+        </div>
       )}
-      {editing ? (
-        <form className="row" onSubmit={search}>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Ville…" autoFocus />
-          <button className="btn small primary">OK</button>
-        </form>
-      ) : (
-        <button className="link" onClick={() => setEditing(true)}>📍 {city.name}</button>
-      )}
-    </div>
+    </section>
   )
 }

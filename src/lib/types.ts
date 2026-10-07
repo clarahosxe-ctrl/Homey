@@ -31,3 +31,26 @@ export interface WorkEntry {
   to: string
   note: string
 }
+
+export interface Chore {
+  id: string
+  name: string
+  icon: string
+  everyDays: number
+  rotate: boolean // true = à tour de rôle entre les membres
+  assignee: string // member id, si rotate = false ('' = tout le monde)
+  lastDone: string // YYYY-MM-DD ou ''
+  lastBy: string // member id
+  history: { by: string; date: string }[]
+}
+
+export type CodeFormat = 'CODE128' | 'EAN13' | 'QR'
+
+export interface LoyaltyCard {
+  id: string
+  name: string
+  number: string
+  format: CodeFormat
+  color: string
+  owner: string // member id ('' = foyer)
+}

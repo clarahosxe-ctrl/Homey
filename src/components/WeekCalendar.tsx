@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import type { Household } from '../lib/household'
-import { DAY_SHORT, iso, isSameDay, weekDays } from '../lib/dates'
+import { DAY_SHORT, addDays, iso, isSameDay, weekDays } from '../lib/dates'
 import { binOccursOn } from '../lib/recurrence'
 import { useBins } from '../modules/Poubelles'
 import { WORK_KINDS, useWork } from '../modules/Travail'
@@ -7,37 +8,45 @@ import { WORK_KINDS, useWork } from '../modules/Travail'
 export default function WeekCalendar({ household }: { household: Household }) {
   const [bins] = useBins()
   const [work] = useWork()
-  const days = weekDays()
+  const [offset, setOffset] = useState(0)
+  const days = weekDays(addDays(new Date(), offset * 7))
   const today = new Date()
+  const title = days[3].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
 
   return (
-    <div className="week">
-      {days.map((d) => {
-        const key = iso(d)
-        const dayBins = bins.filter((b) => binOccursOn(b, d))
-        const dayWork = work.filter((w) => w.from <= key && key <= w.to)
-        return (
-          <div key={key} className={'day' + (isSameDay(d, today) ? ' today' : '') + (d < today && !isSameDay(d, today) ? ' past' : '')}>
-            <div className="day-head">
-              <span>{DAY_SHORT[d.getDay()]}</span>
-              <strong>{d.getDate()}</strong>
+    <section className="card-flat">
+      <div className="row between">
+        <h3 className="cal-title">{title}</h3>
+        <div className="row">
+          {offset !== 0 && <button className="link" onClick={() => setOffset(0)}>Aujourd’hui</button>}
+          <button className="round" onClick={() => setOffset(offset - 1)} aria-label="Semaine précédente">‹</button>
+          <button className="round" onClick={() => setOffset(offset + 1)} aria-label="Semaine suivante">›</button>
+        </div>
+      </div>
+      <div className="week">
+        {days.map((d) => {
+          const key = iso(d)
+          const isToday = isSameDay(d, today)
+          return (
+            <div key={key} className={'day' + (isToday ? ' today' : '')}>
+              <div className="day-head">{DAY_SHORT[d.getDay()]} {d.getDate()}</div>
+              <div className="day-body">
+                {bins.filter((b) => binOccursOn(b, d)).map((b) => (
+                  <span key={b.id} className="tag" style={{ background: b.color }} title={b.name}>🗑️<b>{b.name}</b></span>
+                ))}
+                {work.filter((w) => w.from <= key && key <= w.to).map((w) => {
+                  const m = household.members.find((x) => x.id === w.member)
+                  return (
+                    <span key={w.id} className="tag soft" style={{ borderColor: m?.color, color: m?.color }} title={`${m?.name} · ${WORK_KINDS[w.kind].label}`}>
+                      {WORK_KINDS[w.kind].icon}<b>{m?.name}</b>
+                    </span>
+                  )
+                })}
+              </div>
             </div>
-            <div className="day-body">
-              {dayBins.map((b) => (
-                <span key={b.id} className="tag" style={{ background: b.color }} title={b.name}>🗑️ {b.name}</span>
-              ))}
-              {dayWork.map((w) => {
-                const m = household.members.find((x) => x.id === w.member)
-                return (
-                  <span key={w.id} className="tag soft" style={{ borderColor: m?.color, color: m?.color }} title={`${m?.name} · ${WORK_KINDS[w.kind].label}`}>
-                    {WORK_KINDS[w.kind].icon} {m?.name}
-                  </span>
-                )
-              })}
-            </div>
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }

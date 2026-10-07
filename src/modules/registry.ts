@@ -3,15 +3,18 @@ export interface ModuleInfo {
   title: string
   icon: string
   hue: string // couleur d'accent de la carte
+  tint?: [string, string] // dégradé pastel de la tuile (modules prêts)
   blurb: string
   ready: boolean
 }
 
 /** Toutes les mini-applis du hub. `ready: false` = carte "bientôt". */
 export const MODULES: ModuleInfo[] = [
-  { id: 'courses', title: 'Courses', icon: '🛒', hue: '#d9694a', blurb: 'Liste partagée à cocher', ready: true },
-  { id: 'poubelles', title: 'Poubelles', icon: '🗑️', hue: '#5c8a6f', blurb: 'Ramassages récurrents', ready: true },
-  { id: 'travail', title: 'Travail', icon: '💼', hue: '#4f7cac', blurb: 'Télétravail, CP, RTT, déplacements', ready: true },
+  { id: 'courses', title: 'Courses', icon: '🛒', hue: '#2f7d68', tint: ['#c3e6d6', '#a6cdbe'], blurb: 'Liste partagée à cocher', ready: true },
+  { id: 'poubelles', title: 'Poubelles', icon: '🗑️', hue: '#a8873a', tint: ['#ebdfc0', '#d8c6a0'], blurb: 'Ramassages récurrents', ready: true },
+  { id: 'travail', title: 'Travail', icon: '💼', hue: '#4f7cac', tint: ['#cde2ea', '#b0cbd8'], blurb: 'Télétravail, CP, RTT, déplacements', ready: true },
+  { id: 'taches', title: 'Tâches ménagères', icon: '🧹', hue: '#3f8f86', tint: ['#bfe0da', '#a2cbc5'], blurb: 'Corvées récurrentes, à tour de rôle', ready: true },
+  { id: 'fidelite', title: 'Cartes de fidélité', icon: '💳', hue: '#8a6fb0', tint: ['#ddd3ea', '#c8bbdc'], blurb: 'Codes-barres de toutes vos cartes', ready: true },
   { id: 'voyages', title: 'Voyages', icon: '✈️', hue: '#3f8fa0', blurb: 'Planifier, budgéter, checklist valises', ready: false },
   { id: 'animaux', title: 'Animaux', icon: '🐾', hue: '#c9922e', blurb: 'Vaccins, vétérinaire, poids, traitements', ready: false },
   { id: 'budget', title: 'Budget', icon: '💶', hue: '#6b8f3a', blurb: 'Dépenses, abonnements, objectifs', ready: false },
@@ -20,7 +23,6 @@ export const MODULES: ModuleInfo[] = [
   { id: 'vehicules', title: 'Véhicules', icon: '🚗', hue: '#6a7480', blurb: 'Entretien, CT, assurance, carburant', ready: false },
   // idées proposées
   { id: 'repas', title: 'Repas', icon: '🍽️', hue: '#d98a3a', blurb: 'Menu de la semaine, recettes → courses', ready: false },
-  { id: 'taches', title: 'Tâches', icon: '🧹', hue: '#4a9a8a', blurb: 'Ménage et corvées tournantes', ready: false },
   { id: 'maison', title: 'Maison', icon: '🔧', hue: '#8a6d4f', blurb: 'Entretien, travaux, garanties, artisans', ready: false },
   { id: 'documents', title: 'Documents', icon: '📁', hue: '#5a6fa8', blurb: 'Papiers, contrats, dates d’échéance', ready: false },
   { id: 'abonnements', title: 'Abonnements', icon: '🔁', hue: '#a85a7a', blurb: 'Renouvellements et résiliations', ready: false },

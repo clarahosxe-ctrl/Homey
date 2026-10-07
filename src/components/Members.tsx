@@ -21,11 +21,11 @@ export default function Members({ household }: { household: Household }) {
             {m.name[0]}
           </button>
         ))}
-        <button className="avatar ghost" onClick={() => setOpen(!open)} aria-label="Gérer le foyer">⚙</button>
+        <button className="avatar ghost" onClick={() => setOpen(!open)} aria-label="Gérer les membres">⚙</button>
       </div>
       {open && (
         <div className="popover panel stack">
-          <strong>Mon foyer</strong>
+          <strong>Membres</strong>
           {members.map((m) => (
             <div key={m.id} className="row">
               <span className="dot-badge" style={{ background: m.color }}>{m.name[0]}</span>
