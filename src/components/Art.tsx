@@ -224,6 +224,19 @@ art.envies = (
   </>
 )
 
+art.rdv = (
+  <>
+    <circle cx="68" cy="62" r="44" fill={W} stroke={G} strokeWidth="6" />
+    <circle cx="68" cy="62" r="34" fill={BL} opacity=".35" />
+    <path d="M52 44q10-8 24 0" fill="none" stroke={W} strokeWidth="5" strokeLinecap="round" />
+    <rect x="60" y="104" width="16" height="40" rx="7" fill={B} />
+    <rect x="132" y="70" width="34" height="62" rx="9" fill={T} />
+    <rect x="140" y="50" width="18" height="24" rx="4" fill={G} />
+    <rect x="136" y="82" width="26" height="10" rx="2" fill={W} opacity=".7" />
+    <g transform="rotate(-24 150 30)"><path d="M118 18l56 28M118 46l56-28" stroke={G} strokeWidth="6" strokeLinecap="round" /><circle cx="114" cy="16" r="9" fill="none" stroke={T} strokeWidth="6" /><circle cx="114" cy="48" r="9" fill="none" stroke={T} strokeWidth="6" /></g>
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

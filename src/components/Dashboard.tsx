@@ -16,6 +16,7 @@ import { useTrips } from '../modules/Voyages'
 import { lastFeedBadge, useBabies, useBabyLog } from '../modules/Bebe'
 import { metersToRead, useMeters, useReadings } from '../modules/Energie'
 import { useWishes } from '../modules/Envies'
+import { needsBooking, useAppts } from '../modules/Rdv'
 import { useCards } from '../modules/Fidelite'
 import Art from './Art'
 import Weather from './Weather'
@@ -40,6 +41,7 @@ export default function Dashboard({ household, hhName }: { household: Household;
   const [meters] = useMeters()
   const [readings] = useReadings()
   const [wishes] = useWishes()
+  const [appts] = useAppts()
   const renewSoon = subs.filter((x) => { const n = nextRenewal(x); return n && daysBetween(new Date(), n) <= 7 }).length
   const nextTrip = [...trips].filter((t) => t.to >= iso(new Date())).sort((a, b) => a.from.localeCompare(b.from))[0]
   const tripBadge = nextTrip ? (nextTrip.from <= iso(new Date()) ? '✈️' : `J-${daysBetween(new Date(), new Date(nextTrip.from + 'T00:00'))}`) : undefined
@@ -65,6 +67,7 @@ export default function Dashboard({ household, hhName }: { household: Household;
     abonnements: renewSoon || undefined,
     bebe: lastFeedBadge(babies, babyLog),
     energie: metersToRead(meters, readings) || undefined,
+    rdv: appts.filter((a) => a.owner === household.current.id && needsBooking(a)).length || undefined,
     envies: wishes.filter((w) => !w.done).length || undefined,
     budget: spentMonth ? `${Math.round(spentMonth)}€` : undefined,
     repas: meals.filter((m) => m.date === iso(new Date())).length || undefined,

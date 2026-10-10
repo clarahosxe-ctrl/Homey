@@ -314,3 +314,4 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transp
 .refcode { align-self: flex-start; border: 1.5px dashed var(--line); background: var(--bg); border-radius: 10px; padding: 6px 12px; font: 700 0.95rem ui-monospace, Menlo, monospace; cursor: pointer; color: var(--ink); }
 .trip-wx { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
 .trip-wx .wk-day { min-width: 58px; }
+.pill { white-space: nowrap; }

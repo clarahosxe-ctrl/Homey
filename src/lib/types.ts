@@ -314,3 +314,20 @@ export interface Vehicle extends TrackerSubject {
   tires?: { fitted?: string; km?: number; size?: string; brand?: string; depth?: number; lifespan?: number }
   notes?: string
 }
+
+/** Un soin / rendez-vous récurrent (coiffeur, beauté…), propre à une personne. */
+export interface Appt {
+  id: string
+  owner: string // member id
+  group: string // cheveux | barbier | beaute | bienetre | autre
+  name: string
+  icon: string
+  everyDays: number // intervalle conseillé entre deux rendez-vous
+  provider: string // salon / praticien
+  phone: string
+  price?: number // tarif habituel
+  note: string
+  history: { date: string; cost?: number }[]
+  booked?: string // date du prochain rendez-vous pris
+  bookedTime?: string
+}

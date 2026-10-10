@@ -13,6 +13,7 @@ import Travail from './Travail'
 import Abonnements from './Abonnements'
 import Animaux from './Animaux'
 import Bebe from './Bebe'
+import Rdv from './Rdv'
 import Energie from './Energie'
 import Envies from './Envies'
 import { DOCUMENTS, HEALTH, HOME, KIDS, PLANTS } from './trackers'
@@ -40,6 +41,7 @@ export const VIEWS: Record<string, View> = {
   jardin: ({ household }) => <Tracker config={PLANTS} household={household} />,
   abonnements: Abonnements,
   bebe: Bebe,
+  rdv: Rdv,
   energie: Energie,
   envies: Envies,
   documents: ({ household }) => <Tracker config={DOCUMENTS} household={household} />,
