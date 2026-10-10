@@ -54,6 +54,17 @@ const art: Record<string, React.ReactNode> = {
   ),
 }
 
+art.anniversaires = (
+  <>
+    <rect x="124" y="36" width="8" height="30" rx="2" fill={G} /><rect x="96" y="30" width="8" height="30" rx="2" fill={T} /><rect x="68" y="36" width="8" height="30" rx="2" fill={G} />
+    <ellipse cx="128" cy="30" rx="5" ry="8" fill={Y} /><ellipse cx="100" cy="24" rx="5" ry="8" fill={Y} /><ellipse cx="72" cy="30" rx="5" ry="8" fill={Y} />
+    <rect x="50" y="64" width="100" height="32" rx="8" fill={W} />
+    <path d="M50 82q10 10 20 0t20 0 20 0 20 0 20 0v6H50z" fill={W} stroke={B} strokeWidth="3" />
+    <rect x="30" y="96" width="140" height="30" rx="8" fill={B} />
+    <rect x="12" y="126" width="176" height="30" rx="8" fill={G} />
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

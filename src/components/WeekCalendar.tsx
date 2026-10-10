@@ -3,11 +3,13 @@ import type { Household } from '../lib/household'
 import { DAY_SHORT, addDays, iso, isSameDay, weekDays } from '../lib/dates'
 import { binOccursOn } from '../lib/recurrence'
 import { useBins } from '../modules/Poubelles'
+import { birthdayOn, useBirthdays } from '../modules/Anniversaires'
 import { WORK_KINDS, useWork } from '../modules/Travail'
 
 export default function WeekCalendar({ household }: { household: Household }) {
   const [bins] = useBins()
   const [work] = useWork()
+  const [birthdays] = useBirthdays()
   const [offset, setOffset] = useState(0)
   const days = weekDays(addDays(new Date(), offset * 7))
   const today = new Date()
@@ -31,6 +33,9 @@ export default function WeekCalendar({ household }: { household: Household }) {
             <div key={key} className={'day' + (isToday ? ' today' : '')}>
               <div className="day-head">{DAY_SHORT[d.getDay()]} {d.getDate()}</div>
               <div className="day-body">
+                {birthdays.filter((b) => birthdayOn(b, d)).map((b) => (
+                  <span key={b.id} className="tag" style={{ background: '#c4607e' }} title={`Anniversaire de ${b.name}`}>🎂<b>{b.name}</b></span>
+                ))}
                 {bins.filter((b) => binOccursOn(b, d)).map((b) => (
                   <span key={b.id} className="tag" style={{ background: b.color }} title={b.name}>🗑️<b>{b.name}</b></span>
                 ))}

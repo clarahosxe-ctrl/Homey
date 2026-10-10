@@ -55,3 +55,12 @@ export interface LoyaltyCard {
   color: string
   owner: string // member id ('' = foyer)
 }
+
+export interface Birthday {
+  id: string
+  name: string
+  day: number
+  month: number // 1-12
+  year?: number // année de naissance, facultative
+  note: string
+}

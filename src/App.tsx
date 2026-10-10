@@ -5,6 +5,7 @@ import Avatar from './components/Avatar'
 import ProfileSheet from './components/ProfileSheet'
 import { useMembers } from './lib/household'
 import { getHousehold } from './lib/sync'
+import Anniversaires from './modules/Anniversaires'
 import Courses from './modules/Courses'
 import Fidelite from './modules/Fidelite'
 import Poubelles from './modules/Poubelles'
@@ -55,6 +56,7 @@ export default function App() {
         {active?.id === 'poubelles' && <Poubelles />}
         {active?.id === 'travail' && <Travail household={household} />}
         {active?.id === 'taches' && <Taches household={household} />}
+        {active?.id === 'anniversaires' && <Anniversaires />}
         {active?.id === 'fidelite' && <Fidelite household={household} />}
       </main>
       {(household.needsProfile || profileOpen) && (
