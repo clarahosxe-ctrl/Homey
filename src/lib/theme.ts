@@ -18,7 +18,6 @@ export const THEMES: ThemeDef[] = [
   { id: 'foret', label: 'Forêt', hint: 'Verts naturels', preview: ['#edf1e8', '#fbfdf8', '#3c7a3c', '#1c2a1c'] },
   { id: 'rose', label: 'Rose poudré', hint: 'Doux et lumineux', preview: ['#fbf0f2', '#ffffff', '#c4486e', '#3a1f28'] },
   { id: 'sepia', label: 'Sépia', hint: 'Papier ancien', preview: ['#f3e9d7', '#fbf5e8', '#9a6b2f', '#3b2f20'] },
-  { id: 'mono', label: 'Monochrome', hint: 'Une seule couleur (bleu ardoise), illustrations comprises', preview: ['#e9edf1', '#f8fafc', '#34536f', '#16222e'] },
   { id: 'nb', label: 'Noir & blanc', hint: 'Contraste maximal, sans aucune couleur', preview: ['#ffffff', '#efefef', '#000000', '#000000'] },
 ]
 

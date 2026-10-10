@@ -82,15 +82,6 @@
   --accent: #9a6b2f; --title: #6b4518;
   --shadow: 0 1px 2px rgba(80, 55, 20, 0.08), 0 8px 24px -12px rgba(80, 55, 20, 0.22);
 }
-/* Monochrome : une seule teinte (bleu ardoise) déclinée en clairs et foncés, y compris les illustrations */
-:root[data-theme='mono'] {
-  --bg: #e9edf1; --surface: #f8fafc; --surface-2: #dce3ea; --ink: #16222e; --ink-2: #5a6b7b; --line: #ccd5de;
-  --accent: #34536f; --title: #243b50;
-  filter: grayscale(1) sepia(1) hue-rotate(172deg) saturate(1.35) contrast(1.06);
-}
-/* tuiles : valeurs de gris moyennes avant teinte, pour rester lisibles sur le fond */
-:root[data-theme='mono'] .tile { background: linear-gradient(160deg, #c4c4c4, #a3a3a3); }
-:root[data-theme='mono'] .count { background: rgba(255, 255, 255, 0.92); }
 /* Noir et blanc : contraste maximal */
 :root[data-theme='nb'] {
   --bg: #ffffff; --surface: #ffffff; --surface-2: #efefef; --ink: #000000; --ink-2: #4a4a4a; --line: #000000;
