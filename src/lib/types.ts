@@ -49,6 +49,24 @@ export interface Chore {
   lastDone: string // YYYY-MM-DD ou ''
   lastBy: string // member id
   history: { by: string; date: string }[]
+  zone?: string // pièce / zone (Cuisine, Salle de bain…)
+  firstDue?: string // 1re échéance (YYYY-MM-DD) tant que la tâche n'a jamais été faite
+}
+
+export interface ChoreProfile {
+  done: boolean // questionnaire passé (ou ignoré)
+  housing: 'appartement' | 'maison'
+  bedrooms: number
+  bathrooms: number
+  floors: number
+  kids: number
+  baby: boolean
+  pets: string[] // 'chien' | 'chat' | 'autre'
+  garden: boolean
+  balcony: boolean
+  plants: boolean
+  dishwasher: boolean
+  level: 'leger' | 'standard' | 'meticuleux'
 }
 
 export type CodeFormat = 'CODE128' | 'EAN13' | 'QR'
