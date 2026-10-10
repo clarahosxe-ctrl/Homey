@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CheckRow, FreeForm, euro, lastOf, nf, when, type Saved } from '../components/CheckRow'
+import { Album, PhotoMini, PhotoThumb } from '../components/Photo'
 import { dueItems } from '../components/Tracker'
 import type { Household } from '../lib/household'
 import { daysBetween, fmtShort, iso, parse } from '../lib/dates'
@@ -60,7 +61,7 @@ export default function Vehicules({ household }: { household: Household }) {
           return (
             <li key={v.id}>
               <button className="panel trip" onClick={() => setSelId(v.id)}>
-                <span className="chore-icon">{v.emoji}</span>
+                <PhotoMini id={v.photo} fallback={v.emoji} size={52} />
                 <div className="grow" style={{ textAlign: 'left' }}>
                   <strong>{fullName(v)}</strong>
                   <div className="sub">{bits.join(' · ') || 'Fiche à compléter'}{v.km !== undefined && ` · ${nf(v.km)} km`}</div>
@@ -102,7 +103,7 @@ function Detail({ v, recs, patch, addRec, setRecords, onBack, onDelete }: {
     <div className="stack">
       <button className="link" onClick={onBack}>← Tous mes véhicules</button>
       <section className="panel row nowrap" style={{ alignItems: 'center' }}>
-        <span className="chore-icon">{v.emoji}</span>
+        <PhotoThumb id={v.photo} fallback={v.emoji} size={64} onChange={(photo) => patch({ photo })} />
         <div className="grow">
           <h2 className="sheet-title">{fullName(v)}</h2>
           <div className="sub">{[makeModel(v), v.year, energyLabel(v.energy), v.color, v.extra].filter(Boolean).join(' · ')}{v.km !== undefined && ` · ${nf(v.km)} km`}</div>
@@ -160,6 +161,7 @@ function Fiche({ v, patch, onDelete }: { v: Vehicle; patch: (p: Partial<Vehicle>
         </section>
       )}
 
+      <Album ids={v.photos ?? []} onChange={(photos) => patch({ photos })} />
       <section className="panel stack">
         <h3 className="panel-title">Notes</h3>
         <textarea value={v.notes ?? ''} onChange={(e) => patch({ notes: e.target.value })} rows={4} placeholder="Pression des pneus, code radio, garage habituel…" />

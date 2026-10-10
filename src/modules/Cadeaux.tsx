@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Avatar from '../components/Avatar'
+import { PhotoMini, PhotoThumb } from '../components/Photo'
 import type { Household } from '../lib/household'
 import { uid, useStored } from '../lib/storage'
 import type { Gift, GiftStatus } from '../lib/types'
@@ -28,7 +29,7 @@ export default function Cadeaux({ household }: { household: Household }) {
     ...members.filter((m) => m.id !== current.id).map((m) => ({ id: m.id, name: m.name })),
     ...birthdays.map((b) => ({ id: b.id, name: b.name })),
   ]
-  const [d, setD] = useState({ title: '', who: people[0]?.id ?? '__custom', custom: '', occasion: OCCASIONS[0], price: '', url: '', note: '' })
+  const [d, setD] = useState({ title: '', who: people[0]?.id ?? '__custom', custom: '', occasion: OCCASIONS[0], price: '', url: '', note: '', photo: '' })
 
   const add = (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,9 +38,9 @@ export default function Cadeaux({ household }: { household: Household }) {
     if (!d.title.trim() || !forName) return
     setGifts((gs) => [...gs, {
       id: uid(), title: d.title.trim(), forId: person?.id ?? '', forName, occasion: d.occasion, status: 'idee',
-      price: d.price ? Number(d.price) : undefined, url: d.url.trim(), note: d.note.trim(), by: current.id,
+      price: d.price ? Number(d.price) : undefined, url: d.url.trim(), note: d.note.trim(), by: current.id, photo: d.photo || undefined,
     }])
-    setD({ ...d, title: '', price: '', url: '', note: '' })
+    setD({ ...d, title: '', price: '', url: '', note: '', photo: '' })
     setAdding(false)
   }
   const advance = (id: string) => setGifts((gs) => gs.map((g) => (g.id === id ? { ...g, status: STATUS[g.status].next } : g)))
@@ -76,6 +77,7 @@ export default function Cadeaux({ household }: { household: Household }) {
                 const url = safeUrl(g.url)
                 return (
                   <li key={g.id} className="item">
+                    {g.photo && <PhotoMini id={g.photo} fallback="🎁" size={44} />}
                     <div className="grow">
                       <strong className={g.status === 'offert' ? 'struck' : ''}>{g.title}</strong>
                       <div className="sub">
@@ -100,6 +102,7 @@ export default function Cadeaux({ household }: { household: Household }) {
         <form className="panel stack" onSubmit={add}>
           <h3 className="panel-title">Nouveau cadeau</h3>
           <input value={d.title} onChange={(e) => setD({ ...d, title: e.target.value })} placeholder="Idée de cadeau" autoFocus />
+          <div className="row" style={{ alignItems: 'center' }}><PhotoThumb id={d.photo || undefined} fallback="🎁" size={56} onChange={(id) => setD({ ...d, photo: id ?? '' })} label="Photo du cadeau" /><span className="sub">Photo (facultatif)</span></div>
           <div className="row">
             <label className="field">Pour
               <select value={d.who} onChange={(e) => setD({ ...d, who: e.target.value })}>

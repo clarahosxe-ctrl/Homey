@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { PhotoMini, PhotoThumb } from '../components/Photo'
 import type { Household } from '../lib/household'
 import { addDays, iso, startOfDay, weekDays } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
@@ -168,6 +169,7 @@ function Recipes({ recipes, setRecipes }: { recipes: Recipe[]; setRecipes: (u: (
   const [adding, setAdding] = useState(false)
   const [title, setTitle] = useState('')
   const [ingredients, setIngredients] = useState('')
+  const [photo, setPhoto] = useState<string | undefined>()
 
   return (
     <div className="stack">
@@ -175,8 +177,9 @@ function Recipes({ recipes, setRecipes }: { recipes: Recipe[]; setRecipes: (u: (
       <ul className="stack">
         {[...recipes].sort((a, b) => a.title.localeCompare(b.title, 'fr')).map((r) => (
           <li key={r.id} className="panel">
-            <div className="row between">
-              <strong>{r.title}</strong>
+            <div className="row between nowrap" style={{ alignItems: 'center' }}>
+              {r.photo && <PhotoMini id={r.photo} fallback="🍽️" size={48} />}
+              <strong className="grow">{r.title}</strong>
               <button className="icon-btn" onClick={() => confirm(`Supprimer « ${r.title} » ?`) && setRecipes((rs) => rs.filter((x) => x.id !== r.id))} aria-label={`Supprimer ${r.title}`}>×</button>
             </div>
             {r.ingredients.length > 0 && <div className="sub">{r.ingredients.join(' · ')}</div>}
@@ -187,11 +190,11 @@ function Recipes({ recipes, setRecipes }: { recipes: Recipe[]; setRecipes: (u: (
         <form className="panel stack" onSubmit={(e) => {
           e.preventDefault()
           if (!title.trim()) return
-          setRecipes((rs) => [...rs, { id: uid(), title: title.trim(), ingredients: parseList(ingredients) }])
-          setTitle(''); setIngredients(''); setAdding(false)
+          setRecipes((rs) => [...rs, { id: uid(), title: title.trim(), ingredients: parseList(ingredients), photo }])
+          setTitle(''); setIngredients(''); setPhoto(undefined); setAdding(false)
         }}>
           <h3 className="panel-title">Nouvelle recette</h3>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Nom du plat" autoFocus />
+          <div className="row nowrap" style={{ alignItems: 'center' }}><PhotoThumb id={photo} fallback="🍽️" size={56} onChange={setPhoto} label="Photo du plat" /><input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Nom du plat" autoFocus className="grow" /></div>
           <textarea value={ingredients} onChange={(e) => setIngredients(e.target.value)} placeholder="Ingrédients, un par ligne" rows={5} />
           <div className="row">
             <button className="btn primary">Ajouter</button>

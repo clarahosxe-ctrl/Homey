@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Avatar from '../components/Avatar'
+import { PhotoMini, PhotoThumb } from '../components/Photo'
 import type { Household } from '../lib/household'
 import { addDays, daysBetween, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
@@ -59,6 +60,7 @@ export default function Bebe({ household }: { household: Household }) {
   const [mHeight, setMHeight] = useState('')
   const [jTitle, setJTitle] = useState('')
   const [jDate, setJDate] = useState(iso(new Date()))
+  const [jPhoto, setJPhoto] = useState<string | undefined>()
 
   const baby = babies.find((b) => b.id === selId) ?? babies[0]
   const day = iso(addDays(new Date(), offset))
@@ -122,9 +124,12 @@ export default function Bebe({ household }: { household: Household }) {
   return (
     <div className="stack">
       <section className="panel row between" style={{ alignItems: 'center' }}>
-        <div>
-          <strong style={{ fontSize: '1.25rem' }}>👶 {baby.name}</strong>
-          <div className="sub">{age(baby.birth)} · né(e) le {fmtShort(parse(baby.birth))}</div>
+        <div className="row nowrap" style={{ alignItems: 'center' }}>
+          <PhotoThumb id={baby.photo} fallback="👶" size={60} round onChange={(photo) => setBabies((bs) => bs.map((b) => (b.id === baby.id ? { ...b, photo } : b)))} />
+          <div>
+            <strong style={{ fontSize: '1.25rem' }}>{baby.name}</strong>
+            <div className="sub">{age(baby.birth)} · né(e) le {fmtShort(parse(baby.birth))}</div>
+          </div>
         </div>
         <div className="row">
           {babies.length > 1 && babies.map((b) => <button key={b.id} className={'chip' + (b.id === baby.id ? ' on' : '')} onClick={() => setSelId(b.id)}>{b.name}</button>)}
@@ -251,8 +256,8 @@ export default function Bebe({ household }: { household: Household }) {
           <form className="panel stack" onSubmit={(e) => {
             e.preventDefault()
             if (!jTitle.trim()) return
-            push({ kind: 'jalon', at: `${jDate}T12:00`, note: jTitle.trim() })
-            setJTitle('')
+            push({ kind: 'jalon', at: `${jDate}T12:00`, note: jTitle.trim(), photo: jPhoto })
+            setJTitle(''); setJPhoto(undefined)
           }}>
             <h3 className="panel-title">Une première fois ⭐</h3>
             <div className="chips">
@@ -262,6 +267,7 @@ export default function Bebe({ household }: { household: Household }) {
               <input value={jTitle} onChange={(e) => setJTitle(e.target.value)} placeholder="Ou écrivez la vôtre…" className="grow" />
               <input type="date" value={jDate} onChange={(e) => setJDate(e.target.value)} />
             </div>
+            <div className="row" style={{ alignItems: 'center' }}><PhotoThumb id={jPhoto} fallback="📷" size={56} onChange={setJPhoto} label="Ajouter une photo" /><span className="sub">Photo (facultatif)</span></div>
             <button className="btn primary">Ajouter</button>
           </form>
           {jalons.length === 0 ? <p className="empty">Gardez ici les moments à ne pas oublier ⭐</p> : (
@@ -269,7 +275,7 @@ export default function Bebe({ household }: { household: Household }) {
               <ul className="list">
                 {jalons.map((j) => (
                   <li key={j.id} className="item">
-                    <span>⭐</span>
+                    <PhotoMini id={j.photo} fallback="⭐" size={52} />
                     <div className="grow"><strong>{j.note}</strong><div className="sub">{parse(j.at.slice(0, 10)).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })} · à {ageAt(baby.birth, j.at.slice(0, 10))}</div></div>
                     <button className="icon-btn" onClick={() => setLog((ls) => ls.filter((x) => x.id !== j.id))} aria-label="Supprimer">×</button>
                   </li>

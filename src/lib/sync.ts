@@ -37,7 +37,7 @@ const emit = (s?: typeof status) => {
   listeners.forEach((f) => f())
 }
 
-async function rpc<T>(fn: string, args: object): Promise<T> {
+export async function rpc<T>(fn: string, args: object): Promise<T> {
   const r = await fetch(`${URL}/rest/v1/rpc/${fn}`, {
     method: 'POST',
     // Ancienne clé "anon" = JWT (eyJ…) → aussi en Bearer ; nouvelle clé "sb_publishable_…" → apikey seul.

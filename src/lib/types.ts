@@ -3,6 +3,7 @@ export interface Member {
   name: string
   color: string
   emoji?: string // avatar ; sinon l'initiale du prénom
+  photo?: string // id de photo (voir lib/photos.ts)
 }
 
 export interface ShoppingItem {
@@ -102,12 +103,14 @@ export interface Gift {
   url: string
   note: string
   by: string // member id
+  photo?: string
 }
 
 export interface Recipe {
   id: string
   title: string
   ingredients: string[]
+  photo?: string
 }
 
 export interface Meal {
@@ -125,6 +128,8 @@ export interface TrackerSubject {
   name: string
   emoji: string
   extra: string // date de naissance, plaque…
+  photo?: string // photo principale
+  photos?: string[] // album
 }
 
 export interface TrackerRecord {
@@ -216,6 +221,8 @@ export interface Trip {
   todos?: TripTodo[]
   ideas?: TripIdea[]
   geo?: { lat: number; lon: number; label: string }
+  photo?: string // couverture
+  photos?: string[] // album
 }
 
 export interface Subscription {
@@ -233,6 +240,7 @@ export interface Baby {
   id: string
   name: string
   birth: string // YYYY-MM-DD
+  photo?: string
 }
 
 export type BabyKind = 'biberon' | 'tetee' | 'couche' | 'sommeil' | 'mesure' | 'jalon'
@@ -247,6 +255,7 @@ export interface BabyLog {
   detail?: string // couche : pipi | selle | mixte
   weight?: number // kg (mesure)
   height?: number // cm (mesure)
+  photo?: string // photo d'une première fois
   note: string
   by: string
 }

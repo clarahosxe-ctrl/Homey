@@ -27,7 +27,7 @@ export function useMembers() {
   useEffect(() => {
     if (!profile) return
     const me = members.find((m) => m.id === profile.id)
-    if (me && me.name === profile.name && me.color === profile.color && me.emoji === profile.emoji) return
+    if (me && me.name === profile.name && me.color === profile.color && me.emoji === profile.emoji && me.photo === profile.photo) return
     setMembers((ms) => (ms.some((m) => m.id === profile.id) ? ms.map((m) => (m.id === profile.id ? profile : m)) : [...ms, profile]))
   }, [members, profile, setMembers])
 

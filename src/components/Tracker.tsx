@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Avatar from './Avatar'
+import { PhotoThumb } from './Photo'
 import type { Household } from '../lib/household'
 import { addDays, daysBetween, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
@@ -108,7 +109,7 @@ export default function Tracker({ config, household }: { config: TrackerConfig; 
           <section key={s.id} className="panel stack">
             <div className="row between nowrap">
               <div className="row nowrap" style={{ alignItems: 'center', minWidth: 0 }}>
-                <span className="chore-icon">{s.emoji}</span>
+                <PhotoThumb id={s.photo} fallback={s.emoji} size={48} onChange={(photo) => setSubjects((ss) => ss.map((x) => (x.id === s.id ? { ...x, photo } : x)))} />
                 <div>
                   <strong>{s.name}</strong>
                   <div className="sub">

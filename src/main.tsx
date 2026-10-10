@@ -1,10 +1,13 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
+import { retryPending } from './lib/photos'
 import { startSync } from './lib/sync'
 import './styles.css'
 
 startSync()
+void retryPending()
+setInterval(() => void retryPending(), 20_000)
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

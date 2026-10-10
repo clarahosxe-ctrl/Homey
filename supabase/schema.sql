@@ -62,3 +62,10 @@ begin
 end $$;
 
 grant execute on function create_household(text), join_household(text), get_docs(text), put_doc(text, text, json) to anon;
+
+-- Photos (ajout) : lecture d'un seul document par clé. Les photos sont stockées comme des documents "photo-<id>".
+create or replace function get_doc(p_code text, p_key text) returns json
+language sql security definer set search_path = public as $$
+  select value from docs where household = upper(p_code) and key = p_key;
+$$;
+grant execute on function get_doc(text, text) to anon;

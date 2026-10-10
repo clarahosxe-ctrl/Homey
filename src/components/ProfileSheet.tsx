@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { EMOJIS, PALETTE, type Household } from '../lib/household'
 import Avatar from './Avatar'
+import { PhotoThumb } from './Photo'
 
 export default function ProfileSheet({ household, welcome, onClose, onJoin }: { household: Household; welcome: boolean; onClose: () => void; onJoin?: () => void }) {
   const { current, legacy, members, saveProfile, claim, removeMember } = household
@@ -8,11 +9,12 @@ export default function ProfileSheet({ household, welcome, onClose, onJoin }: { 
   const [name, setName] = useState(start?.name ?? '')
   const [color, setColor] = useState(start?.color ?? PALETTE[Math.floor(Math.random() * PALETTE.length)])
   const [emoji, setEmoji] = useState(start?.emoji ?? '')
+  const [photo, setPhoto] = useState<string | undefined>(start?.photo)
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) return
-    saveProfile({ name: name.trim(), color, emoji: emoji || undefined })
+    saveProfile({ name: name.trim(), color, emoji: emoji || undefined, photo })
     onClose()
   }
 
@@ -38,7 +40,7 @@ export default function ProfileSheet({ household, welcome, onClose, onJoin }: { 
           <button type="button" className="btn small" onClick={onJoin}>🔑 J’ai un code de foyer</button>
         )}
 
-        <div className="profile-preview"><Avatar m={{ id: 'x', name: name || '?', color, emoji }} size={72} /></div>
+        <div className="profile-preview"><PhotoThumb id={photo} round size={84} onChange={setPhoto} label="Choisir ma photo" fallback={<Avatar m={{ id: 'x', name: name || '?', color, emoji }} size={84} />} /></div>
 
         <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Prénom" maxLength={24} autoFocus />
 

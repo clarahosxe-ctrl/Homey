@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CheckRow, FreeForm, euro, lastOf, when, type Saved } from '../components/CheckRow'
+import { Album, PhotoMini, PhotoThumb } from '../components/Photo'
 import { dueItems } from '../components/Tracker'
 import type { Household } from '../lib/household'
 import { daysBetween, fmtShort, iso, parse } from '../lib/dates'
@@ -71,7 +72,7 @@ export default function Animaux({ household }: { household: Household }) {
           return (
             <li key={p.id}>
               <button className="panel trip" onClick={() => setSelId(p.id)}>
-                <span className="chore-icon">{p.emoji}</span>
+                <PhotoMini id={p.photo} fallback={p.emoji} size={52} />
                 <div className="grow" style={{ textAlign: 'left' }}>
                   <strong>{p.name}</strong>
                   <div className="sub">{bits.join(' · ') || 'Fiche à compléter'}</div>
@@ -118,7 +119,7 @@ function Detail({ pet, recs, patch, addRec, clearKind, setRecords, onBack, onDel
     <div className="stack">
       <button className="link" onClick={onBack}>← Tous mes animaux</button>
       <section className="panel row nowrap" style={{ alignItems: 'center' }}>
-        <span className="chore-icon">{pet.emoji}</span>
+        <PhotoThumb id={pet.photo} fallback={pet.emoji} size={64} onChange={(photo) => patch({ photo })} />
         <div className="grow">
           <h2 className="sheet-title">{pet.name}</h2>
           <div className="sub">{[sp?.label, pet.breed, pet.sex === 'm' ? '♂ Mâle' : pet.sex === 'f' ? '♀ Femelle' : '', pet.neutered === 'oui' ? neuterWord : '', ageOf(pet.birth)].filter(Boolean).join(' · ')}</div>
@@ -164,6 +165,7 @@ function Fiche({ pet, patch, neuterWord, onDelete }: { pet: Pet; patch: (p: Part
         <label className="field">N° de puce / tatouage<input value={pet.chip ?? ''} onChange={(e) => patch({ chip: e.target.value })} inputMode="numeric" /></label>
         <label className="field">Alimentation<input value={pet.food ?? ''} onChange={(e) => patch({ food: e.target.value })} placeholder="Croquettes, pâtée, marque…" /></label>
       </section>
+      <Album ids={pet.photos ?? []} onChange={(photos) => patch({ photos })} />
       <section className="panel stack">
         <h3 className="panel-title">Vétérinaire</h3>
         <input value={pet.vetName ?? ''} onChange={(e) => patch({ vetName: e.target.value })} placeholder="Nom / clinique" aria-label="Vétérinaire" />

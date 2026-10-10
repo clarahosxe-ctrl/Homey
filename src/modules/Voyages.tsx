@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Album, PhotoMini, PhotoThumb } from '../components/Photo'
 import type { Household } from '../lib/household'
 import { daysBetween, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
@@ -12,6 +13,10 @@ import { travelersOf, type SectionProps } from './voyages/shared'
 import Todos from './voyages/Todos'
 import TripBudget from './voyages/TripBudget'
 
+function PhotosTab({ trip, patch }: SectionProps) {
+  return <Album ids={trip.photos ?? []} onChange={(photos) => patch((t) => ({ ...t, photos }))} title="📸 Photos du voyage" />
+}
+
 export const useTrips = () => useStored<Trip[]>('trips', [])
 
 const TABS = [
@@ -22,6 +27,7 @@ const TABS = [
   { id: 'valise', label: '🧳 Valise', C: Packing },
   { id: 'todo', label: '✅ À faire', C: Todos },
   { id: 'idees', label: '✨ Idées', C: Ideas },
+  { id: 'photos', label: '📸 Photos', C: PhotosTab },
 ] as const
 
 export default function Voyages({ household }: { household: Household }) {
@@ -61,7 +67,7 @@ export default function Voyages({ household }: { household: Household }) {
     return (
       <li>
         <button className={'panel trip' + (muted ? ' muted' : '')} onClick={() => setSelId(t.id)}>
-          <span className="chore-icon">✈️</span>
+          <PhotoMini id={t.photo} fallback="✈️" size={52} />
           <div className="grow" style={{ textAlign: 'left' }}>
             <strong>{t.name}</strong>
             <div className="sub">{t.destination && `${t.destination} · `}{fmtShort(parse(t.from))} → {fmtShort(parse(t.to))}</div>
@@ -111,6 +117,7 @@ function TripView({ trip, household, patch, onBack, onDelete }: { trip: Trip; ho
       <button className="link" onClick={onBack}>← Tous les voyages</button>
       <section className="panel stack">
         <div className="row between nowrap">
+          <PhotoThumb id={trip.photo} fallback="✈️" size={64} onChange={(photo) => patch((t) => ({ ...t, photo }))} label="Photo de couverture" />
           <div className="grow" style={{ minWidth: 0 }}>
             <input className="title-input" value={trip.name} onChange={(e) => patch((t) => ({ ...t, name: e.target.value }))} aria-label="Nom du voyage" />
             <div className="row" style={{ alignItems: 'center', marginTop: 6 }}>
