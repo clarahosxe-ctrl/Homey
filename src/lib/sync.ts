@@ -40,7 +40,8 @@ const emit = (s?: typeof status) => {
 async function rpc<T>(fn: string, args: object): Promise<T> {
   const r = await fetch(`${URL}/rest/v1/rpc/${fn}`, {
     method: 'POST',
-    headers: { apikey: ANON!, Authorization: `Bearer ${ANON}`, 'Content-Type': 'application/json' },
+    // Ancienne clé "anon" = JWT (eyJ…) → aussi en Bearer ; nouvelle clé "sb_publishable_…" → apikey seul.
+    headers: { apikey: ANON!, ...(ANON!.startsWith('eyJ') ? { Authorization: `Bearer ${ANON}` } : {}), 'Content-Type': 'application/json' },
     body: JSON.stringify(args),
   })
   if (!r.ok) throw new Error(`${fn}: ${r.status}`)
