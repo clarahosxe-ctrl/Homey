@@ -31,7 +31,7 @@ export const VIEWS: Record<string, View> = {
   anniversaires: () => <Anniversaires />,
   cadeaux: Cadeaux,
   repas: Repas,
-  voyages: () => <Voyages />,
+  voyages: Voyages,
   animaux: Animaux,
   vehicules: Vehicules,
   budget: Budget,

@@ -159,7 +159,46 @@ export interface TripItem {
   label: string
   kind: string
   cost?: number
+  paid?: boolean
+  payer?: string // id d'un voyageur
 }
+
+export interface PackItem {
+  id: string
+  label: string
+  done: boolean
+  who?: string // id d'un voyageur ; absent = commun
+}
+
+export interface Traveler {
+  id: string // id du membre du foyer, ou identifiant d'invité
+  name: string
+  member?: string
+  kind: 'adulte' | 'enfant' | 'bebe'
+  doc?: 'passeport' | 'cni' | ''
+  docExpiry?: string
+}
+
+export interface TripStop { id: string; name: string; from: string; to: string }
+
+export interface Booking {
+  id: string
+  kind: string // vol | train | hebergement | location | activite | autre
+  title: string
+  ref: string // n° de réservation
+  date: string
+  time?: string
+  endDate?: string
+  link: string
+  cost?: number
+  paid: boolean
+  payer?: string
+  note: string
+}
+
+export interface TripExpense { id: string; date: string; label: string; category: string; amount: number; payer?: string }
+export interface TripTodo { id: string; label: string; done: boolean; due?: string }
+export interface TripIdea { id: string; title: string; category: string; note: string; link: string; done: boolean; planned?: boolean }
 
 export interface Trip {
   id: string
@@ -169,7 +208,14 @@ export interface Trip {
   to: string
   budget?: number
   plan: TripItem[]
-  packing: { id: string; label: string; done: boolean }[]
+  packing: PackItem[]
+  stops?: TripStop[]
+  bookings?: Booking[]
+  travelers?: Traveler[]
+  expenses?: TripExpense[]
+  todos?: TripTodo[]
+  ideas?: TripIdea[]
+  geo?: { lat: number; lon: number; label: string }
 }
 
 export interface Subscription {

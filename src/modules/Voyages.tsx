@@ -1,24 +1,32 @@
 import { useState } from 'react'
+import type { Household } from '../lib/household'
 import { daysBetween, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
-import type { Trip, TripItem } from '../lib/types'
+import type { Trip } from '../lib/types'
+import Bookings from './voyages/Bookings'
+import Ideas from './voyages/Ideas'
+import Overview from './voyages/Overview'
+import Packing from './voyages/Packing'
+import Plan from './voyages/Plan'
+import { travelersOf, type SectionProps } from './voyages/shared'
+import Todos from './voyages/Todos'
+import TripBudget from './voyages/TripBudget'
 
 export const useTrips = () => useStored<Trip[]>('trips', [])
 
-const KINDS = [
-  { id: 'transport', icon: '🚆', label: 'Transport' },
-  { id: 'hebergement', icon: '🏨', label: 'Hébergement' },
-  { id: 'activite', icon: '🎟️', label: 'Activité' },
-  { id: 'repas', icon: '🍽️', label: 'Repas' },
-  { id: 'autre', icon: '📌', label: 'Autre' },
-]
-const kindIcon = (id: string) => KINDS.find((k) => k.id === id)?.icon ?? '📌'
-const euro = (n: number) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })
+const TABS = [
+  { id: 'apercu', label: '🏠 Aperçu', C: Overview },
+  { id: 'programme', label: '🗓️ Programme', C: Plan },
+  { id: 'resa', label: '🎫 Réservations', C: Bookings },
+  { id: 'budget', label: '💶 Budget', C: TripBudget },
+  { id: 'valise', label: '🧳 Valise', C: Packing },
+  { id: 'todo', label: '✅ À faire', C: Todos },
+  { id: 'idees', label: '✨ Idées', C: Ideas },
+] as const
 
-const STARTER = ['Pièces d’identité / passeport', 'Billets et réservations', 'Carte bancaire', 'Chargeurs et batteries', 'Trousse de toilette', 'Médicaments', 'Vêtements (selon la météo)', 'Sous-vêtements et chaussettes', 'Lunettes de soleil', 'Adaptateur de prise', 'Pochette de documents', 'Bouteille d’eau']
-
-export default function Voyages() {
+export default function Voyages({ household }: { household: Household }) {
   const [trips, setTrips] = useTrips()
+  const { members } = household
   const [selId, setSelId] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
   const [d, setD] = useState({ name: '', destination: '', from: iso(new Date()), to: iso(new Date()) })
@@ -26,7 +34,10 @@ export default function Voyages() {
   const sel = trips.find((t) => t.id === selId)
   const patch = (id: string, fn: (t: Trip) => Trip) => setTrips((ts) => ts.map((t) => (t.id === id ? fn(t) : t)))
 
-  if (sel) return <TripView trip={sel} onBack={() => setSelId(null)} patch={(fn) => patch(sel.id, fn)} onDelete={() => { setTrips((ts) => ts.filter((t) => t.id !== sel.id)); setSelId(null) }} />
+  if (sel) {
+    return <TripView trip={sel} household={household} patch={(fn) => patch(sel.id, fn)} onBack={() => setSelId(null)}
+      onDelete={() => { setTrips((ts) => ts.filter((t) => t.id !== sel.id)); setSelId(null) }} />
+  }
 
   const today = iso(new Date())
   const sorted = [...trips].sort((a, b) => a.from.localeCompare(b.from))
@@ -37,7 +48,10 @@ export default function Voyages() {
     e.preventDefault()
     if (!d.name.trim()) return
     const id = uid()
-    setTrips((ts) => [...ts, { id, name: d.name.trim(), destination: d.destination.trim(), from: d.from, to: d.to < d.from ? d.from : d.to, plan: [], packing: [] }])
+    setTrips((ts) => [...ts, {
+      id, name: d.name.trim(), destination: d.destination.trim(), from: d.from, to: d.to < d.from ? d.from : d.to, plan: [], packing: [],
+      travelers: members.map((m) => ({ id: m.id, name: m.name, member: m.id, kind: 'adulte' as const })),
+    }])
     setAdding(false); setD({ ...d, name: '', destination: '' }); setSelId(id)
   }
 
@@ -68,7 +82,7 @@ export default function Voyages() {
         <form className="panel stack" onSubmit={add}>
           <h3 className="panel-title">Nouveau voyage</h3>
           <input value={d.name} onChange={(e) => setD({ ...d, name: e.target.value })} placeholder="Nom (ex. Week-end à Lisbonne)" autoFocus />
-          <input value={d.destination} onChange={(e) => setD({ ...d, destination: e.target.value })} placeholder="Destination — facultatif" />
+          <input value={d.destination} onChange={(e) => setD({ ...d, destination: e.target.value })} placeholder="Destination (ville) — pour la météo" />
           <div className="row">
             <label className="field">Départ<input type="date" value={d.from} onChange={(e) => setD({ ...d, from: e.target.value, to: d.to < e.target.value ? e.target.value : d.to })} /></label>
             <label className="field">Retour<input type="date" value={d.to} min={d.from} onChange={(e) => setD({ ...d, to: e.target.value })} /></label>
@@ -85,117 +99,37 @@ export default function Voyages() {
   )
 }
 
-function TripView({ trip, onBack, patch, onDelete }: { trip: Trip; onBack: () => void; patch: (fn: (t: Trip) => Trip) => void; onDelete: () => void }) {
-  const [tab, setTab] = useState<'plan' | 'valise'>('plan')
-  const [label, setLabel] = useState('')
-  const [kind, setKind] = useState('activite')
-  const [date, setDate] = useState(trip.from)
-  const [cost, setCost] = useState('')
-  const [item, setItem] = useState('')
-
-  const planned = trip.plan.reduce((s, p) => s + (p.cost ?? 0), 0)
+function TripView({ trip, household, patch, onBack, onDelete }: { trip: Trip; household: Household; patch: SectionProps['patch']; onBack: () => void; onDelete: () => void }) {
+  const [tab, setTab] = useState<(typeof TABS)[number]['id']>('apercu')
+  const travelers = travelersOf(trip, household.members)
   const days = daysBetween(parse(trip.from), parse(trip.to)) + 1
-  const byDate = [...new Set(trip.plan.map((p) => p.date))].sort()
-  const done = trip.packing.filter((p) => p.done).length
-
-  const addPlan = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!label.trim()) return
-    const it: TripItem = { id: uid(), date, label: label.trim(), kind, cost: cost ? Number(cost) : undefined }
-    patch((t) => ({ ...t, plan: [...t.plan, it] }))
-    setLabel(''); setCost('')
-  }
-  const addPack = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!item.trim()) return
-    patch((t) => ({ ...t, packing: [...t.packing, { id: uid(), label: item.trim(), done: false }] }))
-    setItem('')
-  }
+  const left = daysBetween(new Date(), parse(trip.from))
+  const Active = TABS.find((t) => t.id === tab)!.C
 
   return (
     <div className="stack">
       <button className="link" onClick={onBack}>← Tous les voyages</button>
       <section className="panel stack">
-        <div className="row between">
-          <div>
-            <h2 className="sheet-title">{trip.name}</h2>
-            <div className="sub">{trip.destination && `${trip.destination} · `}{fmtShort(parse(trip.from))} → {fmtShort(parse(trip.to))} · {days} jour{days > 1 ? 's' : ''}</div>
+        <div className="row between nowrap">
+          <div className="grow" style={{ minWidth: 0 }}>
+            <input className="title-input" value={trip.name} onChange={(e) => patch((t) => ({ ...t, name: e.target.value }))} aria-label="Nom du voyage" />
+            <div className="row" style={{ alignItems: 'center', marginTop: 6 }}>
+              <input value={trip.destination} onChange={(e) => patch((t) => ({ ...t, destination: e.target.value, geo: undefined }))} placeholder="Destination" aria-label="Destination" className="grow" />
+            </div>
           </div>
           <button className="icon-btn" onClick={() => confirm(`Supprimer « ${trip.name} » ?`) && onDelete()} aria-label="Supprimer le voyage">🗑️</button>
         </div>
         <div className="row" style={{ alignItems: 'center' }}>
-          <div className="grow"><div className="sub">Coût prévu</div><div className="big-num">{euro(planned)}</div></div>
-          <label className="field">Budget (€)
-            <input type="number" min={0} value={trip.budget ?? ''} onChange={(e) => patch((t) => ({ ...t, budget: e.target.value ? Number(e.target.value) : undefined }))} style={{ width: 110 }} />
-          </label>
+          <label className="field">Départ<input type="date" value={trip.from} onChange={(e) => patch((t) => ({ ...t, from: e.target.value, to: t.to < e.target.value ? e.target.value : t.to }))} /></label>
+          <label className="field">Retour<input type="date" value={trip.to} min={trip.from} onChange={(e) => patch((t) => ({ ...t, to: e.target.value }))} /></label>
+          <span className="pill" data-hot={left >= 0 && left <= 7}>{left > 0 ? `J-${left}` : trip.to >= iso(new Date()) ? 'en cours' : 'terminé'} · {days} j</span>
         </div>
-        {trip.budget ? (
-          <>
-            <div className="bar"><span style={{ width: `${Math.min(100, (planned / trip.budget) * 100)}%`, background: planned > trip.budget ? '#c0392b' : 'var(--accent)' }} /></div>
-            <div className="sub">{planned > trip.budget ? `Dépassement de ${euro(planned - trip.budget)}` : `Reste ${euro(trip.budget - planned)}`}</div>
-          </>
-        ) : null}
       </section>
 
-      <div className="chips">
-        <button className={'chip' + (tab === 'plan' ? ' on' : '')} onClick={() => setTab('plan')}>Programme ({trip.plan.length})</button>
-        <button className={'chip' + (tab === 'valise' ? ' on' : '')} onClick={() => setTab('valise')}>Valise ({done}/{trip.packing.length})</button>
+      <div className="chips tabs" role="tablist">
+        {TABS.map((t) => <button key={t.id} role="tab" aria-selected={tab === t.id} className={'chip' + (tab === t.id ? ' on' : '')} onClick={() => setTab(t.id)}>{t.label}</button>)}
       </div>
-
-      {tab === 'plan' && (
-        <>
-          {byDate.map((day) => (
-            <section key={day} className="panel">
-              <h3 className="panel-title" style={{ textTransform: 'capitalize' }}>{parse(day).toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
-              <ul className="list">
-                {trip.plan.filter((p) => p.date === day).map((p) => (
-                  <li key={p.id} className="item">
-                    <span>{kindIcon(p.kind)}</span>
-                    <div className="grow"><strong>{p.label}</strong>{p.cost !== undefined && <div className="sub">{euro(p.cost)}</div>}</div>
-                    <button className="icon-btn" onClick={() => patch((t) => ({ ...t, plan: t.plan.filter((x) => x.id !== p.id) }))} aria-label={`Supprimer ${p.label}`}>×</button>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
-          <form className="panel stack" onSubmit={addPlan}>
-            <h3 className="panel-title">Ajouter au programme</h3>
-            <div className="chips">
-              {KINDS.map((k) => <button type="button" key={k.id} className={'chip' + (kind === k.id ? ' on' : '')} onClick={() => setKind(k.id)}>{k.icon} {k.label}</button>)}
-            </div>
-            <input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Ex. Vol Paris → Lisbonne 8h30" />
-            <div className="row">
-              <label className="field">Date<input type="date" value={date} min={trip.from} max={trip.to} onChange={(e) => setDate(e.target.value)} /></label>
-              <label className="field">Coût (€)<input type="number" min={0} step="0.01" value={cost} onChange={(e) => setCost(e.target.value)} style={{ width: 110 }} /></label>
-            </div>
-            <button className="btn primary">Ajouter</button>
-          </form>
-        </>
-      )}
-
-      {tab === 'valise' && (
-        <section className="panel stack">
-          {trip.packing.length > 0 && <div className="bar"><span style={{ width: `${(done / trip.packing.length) * 100}%` }} /></div>}
-          <ul className="list">
-            {trip.packing.map((p) => (
-              <li key={p.id} className={'item' + (p.done ? ' done' : '')}>
-                <label className="check">
-                  <input type="checkbox" checked={p.done} onChange={() => patch((t) => ({ ...t, packing: t.packing.map((x) => (x.id === p.id ? { ...x, done: !x.done } : x)) }))} />
-                  <span className="box" /><span className="label">{p.label}</span>
-                </label>
-                <button className="icon-btn" onClick={() => patch((t) => ({ ...t, packing: t.packing.filter((x) => x.id !== p.id) }))} aria-label={`Supprimer ${p.label}`}>×</button>
-              </li>
-            ))}
-          </ul>
-          <form className="row add-form" onSubmit={addPack}>
-            <input value={item} onChange={(e) => setItem(e.target.value)} placeholder="Ajouter à la valise…" />
-            <button className="btn primary">Ajouter</button>
-          </form>
-          {trip.packing.length === 0 && (
-            <button className="btn small" onClick={() => patch((t) => ({ ...t, packing: STARTER.map((label) => ({ id: uid(), label, done: false })) }))}>🧳 Ajouter une valise type</button>
-          )}
-        </section>
-      )}
+      <Active trip={trip} patch={patch} household={household} travelers={travelers} />
     </div>
   )
 }

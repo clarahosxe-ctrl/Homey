@@ -5,7 +5,7 @@ import { useStored } from '../lib/storage'
 interface City { name: string; lat: number; lon: number }
 interface Day { date: string; code: number; min: number; max: number; rain: number }
 
-const icon = (c: number) =>
+export const weatherIcon = (c: number) =>
   c === 0 ? '☀️' : c <= 2 ? '🌤️' : c === 3 ? '☁️' : c <= 48 ? '🌫️' : c <= 57 ? '🌦️' : c <= 67 ? '🌧️' : c <= 77 ? '🌨️' : c <= 82 ? '🌦️' : '⛈️'
 
 export default function Weather() {
@@ -65,7 +65,7 @@ export default function Weather() {
           {(days ?? Array.from({ length: 7 }, () => null)).map((d, i) => (
             <div key={i} className="wk-day">
               <span className="sub">{d ? `${DAY_SHORT[new Date(d.date + 'T00:00').getDay()]} ${d.date.slice(8)}` : '…'}</span>
-              <span className="wk-icon">{d ? icon(d.code) : '·'}</span>
+              <span className="wk-icon">{d ? weatherIcon(d.code) : '·'}</span>
               <strong>{d ? `${d.max}°` : '–'}</strong>
               <span className="sub">{d ? `${d.min}°` : ''}</span>
               {d && d.rain >= 40 && <span className="rain">💧{d.rain}%</span>}

@@ -303,3 +303,14 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transp
 .vform { margin: 10px 0 2px 38px; padding: 12px; background: var(--bg); border-radius: 14px; }
 .tick { width: 28px; height: 28px; border-radius: 9px; border: 2px solid var(--line); background: var(--bg); cursor: pointer; flex: none; font-weight: 800; color: #fff; display: grid; place-items: center; padding: 0; }
 .tick.on { background: var(--accent); border-color: var(--accent); }
+
+/* Voyages */
+.title-input { width: 100%; font: 800 1.3rem var(--sans); border: 0; background: transparent; padding: 2px 0; border-bottom: 1.5px dashed var(--line); border-radius: 0; }
+.tabs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; scrollbar-width: none; }
+.tabs .chip { white-space: nowrap; flex: none; }
+.alert { background: #fff4d6; color: #5c4a10; border-radius: 10px; padding: 8px 12px; font-size: 0.9rem; }
+.alert[data-hot='true'] { background: #fde4e1; color: #8a2a1f; }
+@media (prefers-color-scheme: dark) { .alert { background: #3d3315; color: #f0dca0; } .alert[data-hot='true'] { background: #44201c; color: #f5b8b0; } }
+.refcode { align-self: flex-start; border: 1.5px dashed var(--line); background: var(--bg); border-radius: 10px; padding: 6px 12px; font: 700 0.95rem ui-monospace, Menlo, monospace; cursor: pointer; color: var(--ink); }
+.trip-wx { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; }
+.trip-wx .wk-day { min-width: 58px; }
