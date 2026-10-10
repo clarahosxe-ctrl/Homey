@@ -64,3 +64,18 @@ export interface Birthday {
   year?: number // année de naissance, facultative
   note: string
 }
+
+export type GiftStatus = 'idee' | 'achete' | 'offert'
+
+export interface Gift {
+  id: string
+  title: string
+  forId: string // id d'un membre ou d'un anniversaire ('' = personne saisie à la main)
+  forName: string
+  occasion: string
+  status: GiftStatus
+  price?: number
+  url: string
+  note: string
+  by: string // member id
+}

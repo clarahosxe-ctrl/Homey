@@ -6,6 +6,7 @@ import { useShopping } from '../modules/Courses'
 import { useBins } from '../modules/Poubelles'
 import { daysLeft, useChores } from '../modules/Taches'
 import { nextBirthday, useBirthdays } from '../modules/Anniversaires'
+import { useGifts } from '../modules/Cadeaux'
 import { useCards } from '../modules/Fidelite'
 import Art from './Art'
 import Weather from './Weather'
@@ -19,6 +20,7 @@ export default function Dashboard({ household, hhName }: { household: Household;
   const [chores] = useChores()
   const [cards] = useCards()
   const [birthdays] = useBirthdays()
+  const [gifts] = useGifts()
   const soonBirthdays = birthdays.filter((b) => daysBetween(new Date(), nextBirthday(b)) <= 7).length
 
   const toBuy = shopping.filter((i) => !i.done).length
@@ -35,6 +37,7 @@ export default function Dashboard({ household, hhName }: { household: Household;
     poubelles: soonest && delta <= 1 ? (delta === 0 ? 'auj.' : 'dem.') : undefined,
     fidelite: cards.length || undefined,
     anniversaires: soonBirthdays || undefined,
+    cadeaux: gifts.filter((g) => g.status === 'achete' && g.forId !== household.current.id).length || undefined,
   }
 
   const ready = MODULES.filter((m) => m.ready)

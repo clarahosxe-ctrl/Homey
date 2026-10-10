@@ -12,7 +12,7 @@ const POLL_MS = 6000
 export const syncAvailable = !!URL && !!ANON
 
 /** Clés partagées entre les membres. (Le membre "courant" reste propre à chaque appareil.) */
-export const SYNCED = ['members', 'shopping', 'bins', 'work', 'chores', 'loyalty', 'birthdays', 'city']
+export const SYNCED = ['members', 'shopping', 'bins', 'work', 'chores', 'loyalty', 'birthdays', 'gifts', 'city']
 
 export interface Household { code: string; name: string }
 

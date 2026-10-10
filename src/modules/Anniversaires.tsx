@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { daysBetween, startOfDay } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
+import { useGifts } from './Cadeaux'
 import type { Birthday } from '../lib/types'
 
 const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre']
@@ -25,6 +26,7 @@ export function nextBirthday(b: Birthday) {
 
 export default function Anniversaires() {
   const [list, setList] = useBirthdays()
+  const [gifts] = useGifts()
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
   const [day, setDay] = useState(1)
@@ -51,6 +53,7 @@ export default function Anniversaires() {
       <ul className="stack">
         {sorted.map(({ b, next }) => {
           const left = daysBetween(new Date(), next)
+          const ideas = gifts.filter((g) => g.forId === b.id && g.status !== 'offert').length
           const age = b.year ? next.getFullYear() - b.year : null
           return (
             <li key={b.id} className="panel chore">
@@ -61,6 +64,7 @@ export default function Anniversaires() {
                   {b.day} {MONTHS[b.month - 1]}{age !== null && ` · ${age} ans`}{b.note && ` · ${b.note}`}
                 </div>
                 <span className="pill" data-hot={left <= 7}>{left === 0 ? "c'est aujourd'hui ! 🎉" : left === 1 ? 'demain' : `dans ${left} j`}</span>
+                {ideas > 0 && <a className="pill link-pill" href="#/cadeaux"> 🎁 {ideas} idée{ideas > 1 ? 's' : ''}</a>}
               </div>
               <button className="icon-btn" onClick={() => confirm(`Supprimer ${b.name} ?`) && setList((l) => l.filter((x) => x.id !== b.id))} aria-label={`Supprimer ${b.name}`}>×</button>
             </li>

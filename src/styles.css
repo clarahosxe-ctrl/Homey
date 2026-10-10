@@ -234,3 +234,13 @@ ul.stack { list-style: none; margin: 0; padding: 0; }
 .dot-badge { font-weight: 700; line-height: 1; }
 .profile-preview { display: flex; justify-content: center; }
 .chip.emoji { padding: 4px 10px; font-size: 1.2rem; }
+
+/* Cadeaux */
+.struck { text-decoration: line-through; color: var(--ink-2); }
+.small-chip { padding: 4px 10px; font-size: 0.78rem; flex: none; }
+.small-chip[data-status='idee'] { background: #e0b73a; border-color: #e0b73a; color: #3a2e05; }
+.small-chip[data-status='achete'] { background: #4f7cac; border-color: #4f7cac; }
+.small-chip[data-status='offert'] { background: var(--accent); border-color: var(--accent); }
+.center { text-align: center; }
+.link-pill { text-decoration: none; margin-left: 6px; }
+.item a { color: var(--accent); }

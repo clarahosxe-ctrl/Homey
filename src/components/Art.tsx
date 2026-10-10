@@ -65,6 +65,20 @@ art.anniversaires = (
   </>
 )
 
+art.cadeaux = (
+  <>
+    <rect x="112" y="40" width="64" height="64" rx="5" fill={G} />
+    <rect x="138" y="40" width="12" height="64" fill={Y} />
+    <rect x="112" y="64" width="64" height="10" fill={Y} />
+    <rect x="28" y="62" width="86" height="64" rx="5" fill={B} />
+    <rect x="63" y="62" width="14" height="64" fill={T} />
+    <rect x="28" y="88" width="86" height="12" fill={T} />
+    <path d="M70 62C46 34 26 52 56 62zM70 62c24-28 44-10 14 0z" fill={T} stroke="#a8452b" strokeWidth="3" strokeLinejoin="round" />
+    <rect x="60" y="116" width="120" height="34" rx="6" fill={W} />
+    <rect x="112" y="116" width="14" height="34" fill={G2} />
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

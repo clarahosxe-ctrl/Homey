@@ -16,10 +16,10 @@ export const MODULES: ModuleInfo[] = [
   { id: 'taches', title: 'Tâches ménagères', icon: '🧹', hue: '#3f8f86', tint: ['#bfe0da', '#a2cbc5'], blurb: 'Corvées récurrentes, à tour de rôle', ready: true },
   { id: 'fidelite', title: 'Cartes de fidélité', icon: '💳', hue: '#8a6fb0', tint: ['#ddd3ea', '#c8bbdc'], blurb: 'Codes-barres de toutes vos cartes', ready: true },
   { id: 'anniversaires', title: 'Anniversaires', icon: '🎂', hue: '#c4607e', tint: ['#f2d3dc', '#e6b9c6'], blurb: 'Dates, âges, rappels', ready: true },
+  { id: 'cadeaux', title: 'Cadeaux', icon: '🎁', hue: '#c9722e', tint: ['#f5dcc4', '#ebc2a0'], blurb: 'Idées par personne, déjà offert', ready: true },
   { id: 'voyages', title: 'Voyages', icon: '✈️', hue: '#3f8fa0', blurb: 'Planifier, budgéter, checklist valises', ready: false },
   { id: 'animaux', title: 'Animaux', icon: '🐾', hue: '#c9922e', blurb: 'Vaccins, vétérinaire, poids, traitements', ready: false },
   { id: 'budget', title: 'Budget', icon: '💶', hue: '#6b8f3a', blurb: 'Dépenses, abonnements, objectifs', ready: false },
-  { id: 'cadeaux', title: 'Cadeaux', icon: '🎁', hue: '#c4607e', blurb: 'Idées par personne, déjà offert', ready: false },
   { id: 'vehicules', title: 'Véhicules', icon: '🚗', hue: '#6a7480', blurb: 'Entretien, CT, assurance, carburant', ready: false },
   // idées proposées
   { id: 'repas', title: 'Repas', icon: '🍽️', hue: '#d98a3a', blurb: 'Menu de la semaine, recettes → courses', ready: false },

@@ -6,6 +6,7 @@ import ProfileSheet from './components/ProfileSheet'
 import { useMembers } from './lib/household'
 import { getHousehold } from './lib/sync'
 import Anniversaires from './modules/Anniversaires'
+import Cadeaux from './modules/Cadeaux'
 import Courses from './modules/Courses'
 import Fidelite from './modules/Fidelite'
 import Poubelles from './modules/Poubelles'
@@ -57,6 +58,7 @@ export default function App() {
         {active?.id === 'travail' && <Travail household={household} />}
         {active?.id === 'taches' && <Taches household={household} />}
         {active?.id === 'anniversaires' && <Anniversaires />}
+        {active?.id === 'cadeaux' && <Cadeaux household={household} />}
         {active?.id === 'fidelite' && <Fidelite household={household} />}
       </main>
       {(household.needsProfile || profileOpen) && (
