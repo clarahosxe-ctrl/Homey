@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import Dashboard from './components/Dashboard'
 import HouseholdSheet from './components/HouseholdSheet'
-import Members from './components/Members'
+import Avatar from './components/Avatar'
+import ProfileSheet from './components/ProfileSheet'
 import { useMembers } from './lib/household'
 import { getHousehold } from './lib/sync'
 import Courses from './modules/Courses'
@@ -26,6 +27,7 @@ export default function App() {
   const route = useRoute()
   const household = useMembers()
   const [sheet, setSheet] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [, bump] = useState(0)
   const mod = getModule(route)
   const active = mod?.ready ? mod : null
@@ -43,16 +45,21 @@ export default function App() {
           <span className="hh-dot" />
           <span className="hh-name">{active ? active.title : hhName}</span>
         </button>
-        <Members household={household} />
+        <button className="me" onClick={() => setProfileOpen(true)} aria-label="Mon profil">
+          <Avatar m={household.current} size={40} />
+        </button>
       </header>
       <main>
-        {!active && <Dashboard household={household} hhName={hhName} />}
+        {household.needsProfile ? null : !active && <Dashboard household={household} hhName={hhName} />}
         {active?.id === 'courses' && <Courses household={household} />}
         {active?.id === 'poubelles' && <Poubelles />}
         {active?.id === 'travail' && <Travail household={household} />}
         {active?.id === 'taches' && <Taches household={household} />}
         {active?.id === 'fidelite' && <Fidelite household={household} />}
       </main>
+      {(household.needsProfile || profileOpen) && (
+        <ProfileSheet household={household} welcome={household.needsProfile} onClose={() => setProfileOpen(false)} />
+      )}
       {sheet && <HouseholdSheet onClose={() => setSheet(false)} onChange={() => bump((n) => n + 1)} />}
     </div>
   )

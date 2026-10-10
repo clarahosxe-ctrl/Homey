@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Avatar from '../components/Avatar'
 import type { Household } from '../lib/household'
 import { uid, useStored } from '../lib/storage'
 import type { ShoppingItem } from '../lib/types'
@@ -95,9 +96,7 @@ function ItemRow({
         <span className="label">{item.label}</span>
       </label>
       {who && (
-        <span className="dot-badge" style={{ background: who.color }} title={`Ajouté par ${who.name}`}>
-          {who.name[0]}
-        </span>
+        <Avatar m={who} title={`Ajouté par ${who.name}`} />
       )}
       <button className="icon-btn" onClick={() => onRemove(item.id)} aria-label={`Supprimer ${item.label}`}>×</button>
     </li>

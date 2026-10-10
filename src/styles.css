@@ -227,3 +227,10 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid color-mix(i
 .error { color: #c0392b; margin: 0; font-weight: 600; }
 
 ul.stack { list-style: none; margin: 0; padding: 0; }
+
+/* Profil */
+.me { border: 0; background: none; padding: 0; cursor: pointer; border-radius: 50%; flex: none; box-shadow: 0 0 0 3px var(--surface); }
+.me .dot-badge { border: 0; }
+.dot-badge { font-weight: 700; line-height: 1; }
+.profile-preview { display: flex; justify-content: center; }
+.chip.emoji { padding: 4px 10px; font-size: 1.2rem; }

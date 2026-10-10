@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Avatar from '../components/Avatar'
 import type { Household } from '../lib/household'
 import { eachDay, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
@@ -107,7 +108,7 @@ function Entries({ title, entries, members, muted, onRemove }: {
           const k = WORK_KINDS[e.kind]
           return (
             <li key={e.id} className="item">
-              <span className="dot-badge" style={{ background: m?.color }}>{m?.name[0]}</span>
+              {m && <Avatar m={m} />}
               <div className="grow">
                 <strong>{k.icon} {k.label}</strong>
                 <div className="sub">

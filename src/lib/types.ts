@@ -2,6 +2,7 @@ export interface Member {
   id: string
   name: string
   color: string
+  emoji?: string // avatar ; sinon l'initiale du prénom
 }
 
 export interface ShoppingItem {
