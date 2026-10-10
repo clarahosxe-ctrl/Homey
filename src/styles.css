@@ -416,3 +416,6 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transp
 .theme-split { position: absolute; inset: 0; }
 .theme-dot { position: absolute; right: 8px; bottom: 8px; width: 16px; height: 16px; border-radius: 50%; }
 .theme-name { font-size: 0.82rem; font-weight: 600; }
+
+a.tag { text-decoration: none; display: block; }
+.tag.more { color: var(--ink-2); border-color: var(--line); font-weight: 600; }

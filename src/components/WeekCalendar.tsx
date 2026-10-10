@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Household } from '../lib/household'
-import { DAY_SHORT, addDays, iso, isSameDay, weekDays } from '../lib/dates'
+import { DAY_SHORT, addDays, daysBetween, iso, isSameDay, weekDays } from '../lib/dates'
 import { binOccursOn } from '../lib/recurrence'
 import { useBins } from '../modules/Poubelles'
 import { birthdayOn, useBirthdays } from '../modules/Anniversaires'
@@ -8,6 +8,7 @@ import { useMeals } from '../modules/Repas'
 import { useDues } from './Tracker'
 import { renewsOn, useSubs } from '../modules/Abonnements'
 import { useAppts } from '../modules/Rdv'
+import { dueDate, turnOf, useChores } from '../modules/Taches'
 import { useTrips } from '../modules/Voyages'
 import { WORK_KINDS, useHolidays, useWork } from '../modules/Travail'
 
@@ -21,9 +22,28 @@ export default function WeekCalendar({ household }: { household: Household }) {
   const [subs] = useSubs()
   const [holidays] = useHolidays()
   const [appts] = useAppts()
+  const [chores] = useChores()
   const [offset, setOffset] = useState(0)
   const days = weekDays(addDays(new Date(), offset * 7))
   const today = new Date()
+  const todayKey = iso(today)
+  const MAX_CHORES = 3
+
+  /** Tâches ménagères d'un jour : faites ce jour-là (✓), à faire (échéance ou récurrence), ou en retard (affichées aujourd'hui).
+   *  Les tâches quotidiennes (tous les jours) restent hors du calendrier pour ne pas l'encombrer. */
+  const choresOn = (d: Date, key: string) => {
+    const out: { c: (typeof chores)[number]; kind: 'done' | 'due' | 'late' }[] = []
+    for (const c of chores) {
+      if (c.everyDays <= 1) continue
+      if (c.history.some((h) => h.date === key)) out.push({ c, kind: 'done' })
+      if (key < todayKey) continue
+      const first = dueDate(c), firstKey = iso(first)
+      if (key === firstKey) out.push({ c, kind: 'due' })
+      else if (key === todayKey && firstKey < todayKey) out.push({ c, kind: 'late' })
+      else if (key > firstKey && daysBetween(first, d) % c.everyDays === 0) out.push({ c, kind: 'due' })
+    }
+    return out
+  }
   const title = days[3].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
 
   return (
@@ -68,6 +88,26 @@ export default function WeekCalendar({ household }: { household: Household }) {
                 {bins.filter((b) => binOccursOn(b, d)).map((b) => (
                   <span key={b.id} className="tag" style={{ background: b.color }} title={b.name}>🗑️<b>{b.name}</b></span>
                 ))}
+                {(() => {
+                  const list = choresOn(d, key)
+                  return (
+                    <>
+                      {list.slice(0, MAX_CHORES).map(({ c, kind }) => {
+                        const who = turnOf(c, household.members)
+                        const mine = who?.id === household.current.id
+                        const color = who?.color ?? 'var(--ink-2)'
+                        const label = `${c.name}${who ? ` · ${who.name}` : ''}${kind === 'late' ? ' (en retard)' : kind === 'done' ? ' (fait)' : ''}`
+                        return (
+                          <a key={c.id + kind} href="#/taches" className={'tag' + (mine && kind !== 'done' ? '' : ' soft')} title={label}
+                            style={mine && kind !== 'done' ? { background: color } : { borderColor: kind === 'late' ? '#c0392b' : color, color: kind === 'late' ? '#c0392b' : color, opacity: kind === 'done' ? 0.65 : 1 }}>
+                            {kind === 'done' ? '✓' : kind === 'late' ? '⚠️' : c.icon}<b>{c.name}</b>
+                          </a>
+                        )
+                      })}
+                      {list.length > MAX_CHORES && <a href="#/taches" className="tag soft more" title={list.slice(MAX_CHORES).map((x) => x.c.name).join(', ')}>+{list.length - MAX_CHORES} 🧹</a>}
+                    </>
+                  )
+                })()}
                 {work.filter((w) => w.from <= key && key <= w.to).map((w) => {
                   const m = household.members.find((x) => x.id === w.member)
                   return (
