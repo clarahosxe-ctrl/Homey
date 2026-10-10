@@ -132,6 +132,47 @@ art.voyages = (
   </>
 )
 
+art.sante = (
+  <>
+    <path d="M70 44v-8q0-8 8-8h44q8 0 8 8v8" fill="none" stroke={G} strokeWidth="8" strokeLinecap="round" />
+    <rect x="24" y="44" width="152" height="100" rx="14" fill={W} stroke={G} strokeWidth="5" />
+    <rect x="82" y="62" width="36" height="64" rx="5" fill={T} /><rect x="68" y="76" width="64" height="36" rx="5" fill={T} />
+    <rect x="34" y="54" width="22" height="8" rx="3" fill={B} /><rect x="144" y="54" width="22" height="8" rx="3" fill={B} />
+  </>
+)
+art.maison = (
+  <>
+    <rect x="132" y="22" width="18" height="40" rx="2" fill={G} />
+    <rect x="34" y="66" width="132" height="76" fill={W} stroke={G} strokeWidth="5" />
+    <path d="M18 72L100 12l82 60z" fill={T} stroke="#a8452b" strokeWidth="4" strokeLinejoin="round" />
+    <rect x="86" y="96" width="30" height="46" rx="4" fill={Y} />
+    <rect x="46" y="86" width="28" height="26" rx="3" fill={BL} /><rect x="128" y="86" width="28" height="26" rx="3" fill={BL} />
+    <circle cx="108" cy="120" r="2.5" fill={G} />
+  </>
+)
+art.jardin = (
+  <>
+    <path d="M100 100c-30-6-44-30-34-56 26 6 40 26 34 56z" fill={G2} />
+    <path d="M100 100c30-6 44-30 34-56-26 6-40 26-34 56z" fill={G} />
+    <path d="M100 100c-6-30 4-52 20-66 14 22 4 48-20 66z" fill="#6b9a52" />
+    <path d="M62 100h76l-9 42H71z" fill={T} />
+    <rect x="56" y="94" width="88" height="14" rx="4" fill="#a8452b" />
+    <path d="M22 126h40l-5 18H27z" fill={B} /><path d="M40 126c-12-4-18-18-10-30 12 4 16 16 10 30z" fill={G2} />
+    <path d="M148 126h34l-5 18h-24z" fill={W} stroke={B} strokeWidth="3" /><path d="M165 126c10-4 14-16 8-26-10 4-14 14-8 26z" fill={G} />
+  </>
+)
+art.abonnements = (
+  <>
+    <rect x="30" y="28" width="104" height="66" rx="9" fill={B} transform="rotate(-8 82 61)" />
+    <rect x="54" y="44" width="104" height="66" rx="9" fill={G2} transform="rotate(6 106 77)" />
+    <circle cx="112" cy="104" r="42" fill={W} stroke={G} strokeWidth="6" />
+    <path d="M84 98a30 30 0 0 1 50-14" fill="none" stroke={T} strokeWidth="9" strokeLinecap="round" />
+    <path d="M140 66l2 26-24-8z" fill={T} />
+    <path d="M140 110a30 30 0 0 1-50 14" fill="none" stroke={G} strokeWidth="9" strokeLinecap="round" />
+    <path d="M84 142l-2-26 24 8z" fill={G} />
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

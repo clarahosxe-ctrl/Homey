@@ -8,7 +8,9 @@ import { daysLeft, useChores } from '../modules/Taches'
 import { nextBirthday, useBirthdays } from '../modules/Anniversaires'
 import { useGifts } from '../modules/Cadeaux'
 import { useMeals } from '../modules/Repas'
-import { dueItems, useTracker } from './Tracker'
+import { useDues } from './Tracker'
+import { TRACKERS } from '../modules/trackers'
+import { nextRenewal, useSubs } from '../modules/Abonnements'
 import { useTxns, monthKey } from '../modules/Budget'
 import { useTrips } from '../modules/Voyages'
 import { useCards } from '../modules/Fidelite'
@@ -28,8 +30,9 @@ export default function Dashboard({ household, hhName }: { household: Household;
   const [meals] = useMeals()
   const [txns] = useTxns()
   const [trips] = useTrips()
-  const pets = useTracker('pets')
-  const cars = useTracker('vehicles')
+  const dues = useDues(30)
+  const [subs] = useSubs()
+  const renewSoon = subs.filter((x) => { const n = nextRenewal(x); return n && daysBetween(new Date(), n) <= 7 }).length
   const nextTrip = [...trips].filter((t) => t.to >= iso(new Date())).sort((a, b) => a.from.localeCompare(b.from))[0]
   const tripBadge = nextTrip ? (nextTrip.from <= iso(new Date()) ? '✈️' : `J-${daysBetween(new Date(), new Date(nextTrip.from + 'T00:00'))}`) : undefined
   const spentMonth = txns.filter((t) => !t.income && t.date.startsWith(monthKey(0))).reduce((s, t) => s + t.amount, 0)
@@ -50,8 +53,8 @@ export default function Dashboard({ household, hhName }: { household: Household;
     fidelite: cards.length || undefined,
     anniversaires: soonBirthdays || undefined,
     voyages: tripBadge,
-    animaux: dueItems(pets.subjects, pets.records).length || undefined,
-    vehicules: dueItems(cars.subjects, cars.records).length || undefined,
+    ...Object.fromEntries(TRACKERS.map((t) => [t.moduleId, dues[t.key].length || undefined])),
+    abonnements: renewSoon || undefined,
     budget: spentMonth ? `${Math.round(spentMonth)}€` : undefined,
     repas: meals.filter((m) => m.date === iso(new Date())).length || undefined,
     cadeaux: gifts.filter((g) => g.status === 'achete' && g.forId !== household.current.id).length || undefined,

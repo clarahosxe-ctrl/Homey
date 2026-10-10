@@ -4,7 +4,7 @@ import type { Household } from '../lib/household'
 import { addDays, daysBetween, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
 import type { TrackerRecord, TrackerSubject } from '../lib/types'
-import type { TrackerConfig } from '../modules/trackers'
+import { TRACKERS, type TrackerConfig } from '../modules/trackers'
 
 export function useTracker(key: string) {
   const [subjects, setSubjects] = useStored<TrackerSubject[]>(key, [])
@@ -33,6 +33,17 @@ export function dueItems(subjects: TrackerSubject[], records: TrackerRecord[], h
     if (days <= horizonDays) out.push({ subject, kind: r.kind, next: r.next, days })
   }
   return out.sort((a, b) => a.days - b.days)
+}
+
+/** Échéances de toutes les mini-applis "suivi", par clé. (TRACKERS est constant : l'ordre des hooks ne change pas.) */
+export function useDues(horizonDays = 30) {
+  const out: Record<string, (Due & { icon: string })[]> = {}
+  for (const c of TRACKERS) {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { subjects, records } = useTracker(c.key)
+    out[c.key] = dueItems(subjects, records, horizonDays).map((d) => ({ ...d, icon: c.kinds.find((k) => k.id === d.kind)?.icon ?? c.emojis[0] }))
+  }
+  return out
 }
 
 const euro = (n: number) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
@@ -186,7 +197,7 @@ export default function Tracker({ config, household }: { config: TrackerConfig; 
 
       {addingSubject ? (
         <form className="panel stack" onSubmit={addSubject}>
-          <h3 className="panel-title">Nouveau {config.subjectLabel}</h3>
+          <h3 className="panel-title">{config.newLabel}</h3>
           <input value={sName} onChange={(e) => setSName(e.target.value)} placeholder="Nom" autoFocus />
           <div className="chips">
             {config.emojis.map((e) => <button type="button" key={e} className={'chip emoji' + (sEmoji === e ? ' on' : '')} onClick={() => setSEmoji(e)}>{e}</button>)}
@@ -200,7 +211,7 @@ export default function Tracker({ config, household }: { config: TrackerConfig; 
           </div>
         </form>
       ) : (
-        <button className="btn primary" onClick={() => setAddingSubject(true)}>+ Ajouter un {config.subjectLabel}</button>
+        <button className="btn primary" onClick={() => setAddingSubject(true)}>{config.addLabel}</button>
       )}
     </div>
   )

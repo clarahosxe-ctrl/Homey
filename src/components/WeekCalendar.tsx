@@ -5,9 +5,9 @@ import { binOccursOn } from '../lib/recurrence'
 import { useBins } from '../modules/Poubelles'
 import { birthdayOn, useBirthdays } from '../modules/Anniversaires'
 import { useMeals } from '../modules/Repas'
-import { dueItems, useTracker } from './Tracker'
+import { useDues } from './Tracker'
+import { renewsOn, useSubs } from '../modules/Abonnements'
 import { useTrips } from '../modules/Voyages'
-import { PETS, VEHICLES } from '../modules/trackers'
 import { WORK_KINDS, useWork } from '../modules/Travail'
 
 export default function WeekCalendar({ household }: { household: Household }) {
@@ -16,12 +16,8 @@ export default function WeekCalendar({ household }: { household: Household }) {
   const [birthdays] = useBirthdays()
   const [meals] = useMeals()
   const [trips] = useTrips()
-  const pets = useTracker('pets')
-  const cars = useTracker('vehicles')
-  const dues = [
-    ...dueItems(pets.subjects, pets.records, 400).map((d) => ({ ...d, icon: PETS.kinds.find((k) => k.id === d.kind)?.icon ?? '🐾' })),
-    ...dueItems(cars.subjects, cars.records, 400).map((d) => ({ ...d, icon: VEHICLES.kinds.find((k) => k.id === d.kind)?.icon ?? '🚗' })),
-  ]
+  const dues = Object.values(useDues(400)).flat()
+  const [subs] = useSubs()
   const [offset, setOffset] = useState(0)
   const days = weekDays(addDays(new Date(), offset * 7))
   const today = new Date()
@@ -53,6 +49,9 @@ export default function WeekCalendar({ household }: { household: Household }) {
                 ))}
                 {dues.filter((x) => x.next === key).map((x) => (
                   <span key={x.subject.id + x.kind} className="tag" style={{ background: '#5f9a58' }} title={`${x.subject.name} : ${x.kind}`}>{x.icon}<b>{x.subject.name}</b></span>
+                ))}
+                {subs.filter((x) => renewsOn(x, d)).map((x) => (
+                  <span key={x.id} className="tag" style={{ background: '#6f68b8' }} title={`Renouvellement : ${x.name}`}>🔁<b>{x.name}</b></span>
                 ))}
                 {meals.filter((m) => m.date === key && m.slot === 'soir').map((m) => (
                   <span key={m.id} className="tag" style={{ background: '#b8861f' }} title={`Dîner : ${m.title}`}>🍽️<b>{m.title}</b></span>

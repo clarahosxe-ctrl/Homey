@@ -144,3 +144,14 @@ export interface Trip {
   plan: TripItem[]
   packing: { id: string; label: string; done: boolean }[]
 }
+
+export interface Subscription {
+  id: string
+  name: string
+  emoji: string
+  amount: number
+  months: number // 1 = mensuel, 3 = trimestriel, 12 = annuel
+  date: string // une date de prélèvement (la 1ère ou la dernière)
+  notice?: number // préavis de résiliation (jours)
+  by: string
+}

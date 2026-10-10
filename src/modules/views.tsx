@@ -10,7 +10,8 @@ import Poubelles from './Poubelles'
 import Repas from './Repas'
 import Taches from './Taches'
 import Travail from './Travail'
-import { PETS, VEHICLES } from './trackers'
+import Abonnements from './Abonnements'
+import { HEALTH, HOME, PETS, PLANTS, VEHICLES } from './trackers'
 import Voyages from './Voyages'
 
 type View = ComponentType<{ household: Household }>
@@ -29,4 +30,8 @@ export const VIEWS: Record<string, View> = {
   animaux: ({ household }) => <Tracker config={PETS} household={household} />,
   vehicules: ({ household }) => <Tracker config={VEHICLES} household={household} />,
   budget: Budget,
+  sante: ({ household }) => <Tracker config={HEALTH} household={household} />,
+  maison: ({ household }) => <Tracker config={HOME} household={household} />,
+  jardin: ({ household }) => <Tracker config={PLANTS} household={household} />,
+  abonnements: Abonnements,
 }
