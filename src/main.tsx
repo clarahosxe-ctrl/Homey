@@ -3,8 +3,10 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import { retryPending } from './lib/photos'
 import { startSync } from './lib/sync'
+import { applyTheme, getTheme } from './lib/theme'
 import './styles.css'
 
+applyTheme(getTheme())
 startSync()
 void retryPending()
 setInterval(() => void retryPending(), 20_000)

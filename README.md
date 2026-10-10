@@ -22,3 +22,15 @@ Conflits : le dernier qui écrit gagne, par liste (courses, poubelles…). Synch
 Les photos sont réduites sur l'appareil (aperçu 240 px, version 1280 px), gardées dans IndexedDB et envoyées au foyer
 comme documents `photo-<id>` ; elles ne sont téléchargées par les autres membres que lorsqu'elles sont affichées.
 Pour qu'elles se partagent, exécuter une fois la fonction `get_doc` à la fin de `supabase/schema.sql` dans le SQL Editor.
+
+## Foyer obligatoire
+
+Un compte est toujours rattaché à un foyer : au premier lancement (si Supabase est configuré), l'app n'affiche que
+l'écran d'accueil « Créer mon foyer / Rejoindre avec un code ». Quitter un foyer retire la personne de la liste des membres
+et efface de l'appareil les données partagées de ce foyer (le profil et le thème restent).
+
+## Thèmes
+
+Choix dans « Mon profil » (avatar en haut à droite) : Automatique, Clair, Sombre, Nuit, Noir pur, Océan, Forêt, Rose poudré,
+Sépia, Monochrome, Noir & blanc. Chaque thème est un jeu de variables CSS (`:root[data-theme='…']` dans `src/styles.css`,
+liste dans `src/lib/theme.ts`). Le choix est propre à chaque appareil.

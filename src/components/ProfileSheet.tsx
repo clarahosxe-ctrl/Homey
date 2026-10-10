@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { EMOJIS, PALETTE, type Household } from '../lib/household'
 import Avatar from './Avatar'
 import { PhotoThumb } from './Photo'
+import ThemePicker from './ThemePicker'
 
 export default function ProfileSheet({ household, welcome, onClose, onJoin }: { household: Household; welcome: boolean; onClose: () => void; onJoin?: () => void }) {
   const { current, legacy, members, saveProfile, claim, removeMember } = household
@@ -55,6 +56,8 @@ export default function ProfileSheet({ household, welcome, onClose, onJoin }: { 
             <button type="button" key={c} className={'swatch' + (color === c ? ' on' : '')} style={{ background: c }} onClick={() => setColor(c)} aria-label={c} />
           ))}
         </div>
+
+        {!welcome && <ThemePicker />}
 
         <button className="btn primary" disabled={!name.trim()}>{welcome ? 'C’est parti' : 'Enregistrer'}</button>
 

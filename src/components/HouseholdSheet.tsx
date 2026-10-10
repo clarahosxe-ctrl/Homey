@@ -8,7 +8,7 @@ const useHousehold = () => {
 }
 export { useHousehold }
 
-export default function HouseholdSheet({ onClose, onChange }: { onClose: () => void; onChange: () => void }) {
+export default function HouseholdSheet({ onClose, onChange, onLeave }: { onClose: () => void; onChange: () => void; onLeave?: () => void }) {
   const { hh, setHh, status } = useHousehold()
   const [mode, setMode] = useState<'create' | 'join'>('create')
   const [name, setName] = useState('Home sweet home')
@@ -52,7 +52,7 @@ export default function HouseholdSheet({ onClose, onChange }: { onClose: () => v
               <button className="btn primary small" onClick={copy}>{copied ? 'Copié ✓' : 'Copier le code'}</button>
             </div>
             <p className="sub">Les autres membres l’entrent dans « Rejoindre un foyer » sur leur appareil.</p>
-            <button className="btn ghost small" onClick={() => { leaveHousehold(); setHh(null); onChange() }}>Quitter ce foyer sur cet appareil</button>
+            <button className="btn ghost small" onClick={() => confirm('Quitter ce foyer ? Ses données seront retirées de cet appareil et vous reviendrez à l’écran d’accueil. Le foyer, lui, est conservé pour les autres membres.') && (onLeave ? onLeave() : (leaveHousehold(), setHh(null), onChange()))}>Quitter ce foyer</button>
           </>
         ) : (
           syncAvailable && (

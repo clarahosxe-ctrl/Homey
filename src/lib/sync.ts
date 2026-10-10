@@ -32,6 +32,12 @@ let status: 'off' | 'ok' | 'error' = 'off'
 const listeners = new Set<() => void>()
 export const onSyncChange = (fn: () => void) => (listeners.add(fn), () => void listeners.delete(fn))
 export const getSyncStatus = () => status
+
+/** Abonnement aux changements de foyer (créer / rejoindre / quitter). */
+const hhListeners = new Set<() => void>()
+export const onHouseholdChange = (fn: () => void) => (hhListeners.add(fn), () => void hhListeners.delete(fn))
+export const householdSnapshot = () => localStorage.getItem(HH)
+const emitHousehold = () => hhListeners.forEach((f) => f())
 const emit = (s?: typeof status) => {
   if (s) status = s
   listeners.forEach((f) => f())
@@ -116,6 +122,7 @@ export async function createHousehold(name: string) {
   SYNCED.forEach((k) => localStorage.getItem(PREFIX + k) !== null && dirty.add(k)) // on publie l'existant
   SYNCED.forEach((k) => void flush(k))
   startSync()
+  emitHousehold()
   return code
 }
 
@@ -127,14 +134,31 @@ export async function joinHousehold(code: string) {
   dirty.clear() // le foyer rejoint fait foi
   await pull()
   startSync()
+  emitHousehold()
   return name
 }
 
+/** Se retirer de la liste des membres du foyer (côté serveur), puis quitter. Ne bloque jamais le départ si le serveur est injoignable. */
+export async function leaveAndRemoveMember(memberId: string) {
+  const hh = getHousehold()
+  if (hh && syncAvailable) {
+    try {
+      const docs = await rpc<{ key: string; value: { id: string }[] }[]>('get_docs', { p_code: hh.code })
+      const members = docs.find((d) => d.key === 'members')?.value ?? []
+      await rpc('put_doc', { p_code: hh.code, p_key: 'members', p_value: members.filter((m) => m.id !== memberId) })
+    } catch { /* hors ligne : on part quand même */ }
+  }
+  leaveHousehold()
+}
+
+/** Quitter le foyer : les données partagées de ce foyer sont retirées de l'appareil (le profil et le thème restent). */
 export function leaveHousehold() {
   localStorage.removeItem(HH)
+  SYNCED.forEach((k) => localStorage.removeItem(PREFIX + k))
   dirty.clear()
   window.clearInterval(poller)
   emit('off')
+  emitHousehold()
 }
 
 export const formatCode = (c: string) => c.replace(/(.{4})(?=.)/g, '$1-')

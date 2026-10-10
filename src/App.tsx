@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import Dashboard from './components/Dashboard'
+import Welcome from './components/Welcome'
 import HouseholdSheet from './components/HouseholdSheet'
 import Avatar from './components/Avatar'
 import ProfileSheet from './components/ProfileSheet'
 import { useMembers } from './lib/household'
-import { getHousehold } from './lib/sync'
+import { householdSnapshot, leaveAndRemoveMember, onHouseholdChange, syncAvailable } from './lib/sync'
 import { VIEWS } from './modules/views'
 import { getModule } from './modules/registry'
 
@@ -27,7 +28,12 @@ export default function App() {
   const [, bump] = useState(0)
   const mod = getModule(route)
   const active = mod?.ready ? mod : null
-  const hhName = getHousehold()?.name ?? 'Mon foyer'
+  const hhRaw = useSyncExternalStore(onHouseholdChange, householdSnapshot)
+  const hhName = (hhRaw ? (JSON.parse(hhRaw) as { name: string }).name : '') || 'Mon foyer'
+  // Un compte est toujours rattaché à un foyer : sans foyer, on ne voit que l'écran d'accueil.
+  if (syncAvailable && !hhRaw) return <Welcome />
+
+  const quit = async () => { await leaveAndRemoveMember(household.current.id); window.location.assign(window.location.pathname) }
 
   return (
     <div className="app">
@@ -49,9 +55,9 @@ export default function App() {
         {!household.needsProfile && (active ? (() => { const View = VIEWS[active.id]; return View ? <View household={household} /> : null })() : <Dashboard household={household} hhName={hhName} />)}
       </main>
       {(household.needsProfile || profileOpen) && (
-        <ProfileSheet household={household} welcome={household.needsProfile} onClose={() => setProfileOpen(false)} onJoin={() => setSheet(true)} />
+        <ProfileSheet household={household} welcome={household.needsProfile} onClose={() => setProfileOpen(false)} />
       )}
-      {sheet && <HouseholdSheet onClose={() => setSheet(false)} onChange={() => bump((n) => n + 1)} />}
+      {sheet && <HouseholdSheet onClose={() => setSheet(false)} onChange={() => bump((n) => n + 1)} onLeave={quit} />}
     </div>
   )
 }
