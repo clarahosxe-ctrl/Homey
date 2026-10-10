@@ -8,7 +8,7 @@ import { useMeals } from '../modules/Repas'
 import { useDues } from './Tracker'
 import { renewsOn, useSubs } from '../modules/Abonnements'
 import { useTrips } from '../modules/Voyages'
-import { WORK_KINDS, useWork } from '../modules/Travail'
+import { WORK_KINDS, useHolidays, useWork } from '../modules/Travail'
 
 export default function WeekCalendar({ household }: { household: Household }) {
   const [bins] = useBins()
@@ -18,6 +18,7 @@ export default function WeekCalendar({ household }: { household: Household }) {
   const [trips] = useTrips()
   const dues = Object.values(useDues(400)).flat()
   const [subs] = useSubs()
+  const [holidays] = useHolidays()
   const [offset, setOffset] = useState(0)
   const days = weekDays(addDays(new Date(), offset * 7))
   const today = new Date()
@@ -41,6 +42,9 @@ export default function WeekCalendar({ household }: { household: Household }) {
             <div key={key} className={'day' + (isToday ? ' today' : '')}>
               <div className="day-head">{DAY_SHORT[d.getDay()]} {d.getDate()}</div>
               <div className="day-body">
+                {holidays.filter((h) => h.date === key).map((h) => (
+                  <span key={h.date} className="tag soft" style={{ borderColor: 'var(--ink-2)', color: 'var(--ink-2)' }} title={h.name}>🎌<b>{h.name}</b></span>
+                ))}
                 {birthdays.filter((b) => birthdayOn(b, d)).map((b) => (
                   <span key={b.id} className="tag" style={{ background: '#c4607e' }} title={`Anniversaire de ${b.name}`}>🎂<b>{b.name}</b></span>
                 ))}

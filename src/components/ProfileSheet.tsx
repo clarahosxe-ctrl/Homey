@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { EMOJIS, PALETTE, type Household } from '../lib/household'
 import Avatar from './Avatar'
 
-export default function ProfileSheet({ household, welcome, onClose }: { household: Household; welcome: boolean; onClose: () => void }) {
-  const { current, legacy, members, saveProfile, removeMember } = household
+export default function ProfileSheet({ household, welcome, onClose, onJoin }: { household: Household; welcome: boolean; onClose: () => void; onJoin?: () => void }) {
+  const { current, legacy, members, saveProfile, claim, removeMember } = household
   const start = welcome ? legacy : current
   const [name, setName] = useState(start?.name ?? '')
   const [color, setColor] = useState(start?.color ?? PALETTE[Math.floor(Math.random() * PALETTE.length)])
@@ -24,6 +24,19 @@ export default function ProfileSheet({ household, welcome, onClose }: { househol
           {!welcome && <button type="button" className="icon-btn" onClick={onClose} aria-label="Fermer">×</button>}
         </div>
         {welcome && <p className="sub">Comment doit-on vous appeler ? Votre profil reste personnel : chacun a le sien sur son appareil.</p>}
+        {welcome && members.length > 0 && (
+          <div className="stack">
+            <p className="sub"><strong>Déjà dans le foyer ?</strong> Choisissez-vous pour reprendre votre profil :</p>
+            <div className="chips">
+              {members.map((m) => (
+                <button type="button" key={m.id} className="chip" onClick={() => { claim(m); onClose() }}>{m.emoji || '👤'} {m.name}</button>
+              ))}
+            </div>
+          </div>
+        )}
+        {welcome && members.length === 0 && onJoin && (
+          <button type="button" className="btn small" onClick={onJoin}>🔑 J’ai un code de foyer</button>
+        )}
 
         <div className="profile-preview"><Avatar m={{ id: 'x', name: name || '?', color, emoji }} size={72} /></div>
 
@@ -52,12 +65,15 @@ export default function ProfileSheet({ household, welcome, onClose }: { househol
                   <Avatar m={m} size={30} />
                   <span className="grow">{m.name}{m.id === current.id && ' (moi)'}</span>
                   {m.id !== current.id && (
+                    <button type="button" className="btn small" onClick={() => confirm(`Vous êtes ${m.name} ? Cet appareil reprendra ce profil et le vôtre actuel sera retiré.`) && (claim(m), onClose())}>C’est moi</button>
+                  )}
+                  {m.id !== current.id && (
                     <button type="button" className="icon-btn" onClick={() => confirm(`Retirer ${m.name} du foyer ?`) && removeMember(m.id)} aria-label={`Retirer ${m.name}`}>×</button>
                   )}
                 </li>
               ))}
             </ul>
-            <p className="sub">Les membres s’ajoutent seuls en rejoignant le foyer avec le code. Retirez ici un ancien membre ou un doublon.</p>
+            <p className="sub">Les membres s’ajoutent seuls en rejoignant le foyer avec le code. Si vous apparaissez en double, touchez « C’est moi » sur votre autre entrée. « × » retire un membre qui n’utilise plus l’app.</p>
           </div>
         )}
       </form>

@@ -31,6 +31,12 @@ export interface WorkEntry {
   from: string
   to: string
   note: string
+  half?: boolean // demi-journée (une seule journée)
+}
+
+export interface Holiday {
+  date: string
+  name: string
 }
 
 export interface Chore {

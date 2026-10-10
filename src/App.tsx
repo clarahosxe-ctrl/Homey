@@ -49,7 +49,7 @@ export default function App() {
         {!household.needsProfile && (active ? (() => { const View = VIEWS[active.id]; return View ? <View household={household} /> : null })() : <Dashboard household={household} hhName={hhName} />)}
       </main>
       {(household.needsProfile || profileOpen) && (
-        <ProfileSheet household={household} welcome={household.needsProfile} onClose={() => setProfileOpen(false)} />
+        <ProfileSheet household={household} welcome={household.needsProfile} onClose={() => setProfileOpen(false)} onJoin={() => setSheet(true)} />
       )}
       {sheet && <HouseholdSheet onClose={() => setSheet(false)} onChange={() => bump((n) => n + 1)} />}
     </div>

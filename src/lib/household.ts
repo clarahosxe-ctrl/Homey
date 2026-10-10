@@ -35,6 +35,11 @@ export function useMembers() {
 
   const saveProfile = (p: Omit<Member, 'id'>) =>
     setProfile((old) => ({ ...p, id: old?.id ?? legacy?.id ?? uid() }))
+  /** Reprendre un profil déjà présent dans le foyer (évite les doublons quand on change d'appareil). */
+  const claim = (m: Member) => {
+    if (profile && profile.id !== m.id) setMembers((ms) => ms.filter((x) => x.id !== profile.id))
+    setProfile(m)
+  }
   const removeMember = (id: string) => setMembers((ms) => (id === profile?.id ? ms : ms.filter((m) => m.id !== id)))
 
   return {
@@ -43,6 +48,7 @@ export function useMembers() {
     needsProfile: !profile,
     legacy,
     saveProfile,
+    claim,
     removeMember,
   }
 }
