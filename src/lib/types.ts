@@ -70,7 +70,7 @@ export interface ChoreProfile {
   level: 'leger' | 'standard' | 'meticuleux'
 }
 
-export type CodeFormat = 'CODE128' | 'EAN13' | 'QR'
+export type CodeFormat = 'CODE128' | 'CODE39' | 'EAN13' | 'EAN8' | 'UPC' | 'QR' | 'NONE'
 
 export interface LoyaltyCard {
   id: string
@@ -79,6 +79,9 @@ export interface LoyaltyCard {
   format: CodeFormat
   color: string
   owner: string // member id ('' = foyer)
+  photo?: string // photo du recto (utile quand le code ne peut pas être recréé)
+  photoBack?: string // photo du verso
+  note?: string
 }
 
 export interface Birthday {

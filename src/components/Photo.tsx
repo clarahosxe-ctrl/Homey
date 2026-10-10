@@ -25,8 +25,10 @@ export function PhotoMini({ id, fallback, size = 48 }: { id?: string; fallback: 
 }
 
 /** Pastille cliquable : affiche la photo (ou l'emoji) ; un clic ouvre la galerie / l'appareil photo. */
-export function PhotoThumb({ id, fallback, onChange, size = 56, round, label = 'Changer la photo' }: {
-  id?: string; fallback: React.ReactNode; onChange: (id: string | undefined) => void; size?: number; round?: boolean; label?: string
+export function PhotoThumb({ id, fallback, onChange, onFile, size = 56, round, label = 'Changer la photo', keepOld }: {
+  id?: string; fallback: React.ReactNode; onChange: (id: string | undefined) => void; onFile?: (f: File) => void; size?: number; round?: boolean; label?: string
+  /** ne pas supprimer l'ancienne photo tout de suite (formulaires d'édition qu'on peut annuler) */
+  keepOld?: boolean
 }) {
   const src = usePhoto(id)
   const [busy, setBusy] = useState(false)
@@ -34,8 +36,9 @@ export function PhotoThumb({ id, fallback, onChange, size = 56, round, label = '
     const f = e.target.files?.[0]
     e.target.value = ''
     if (!f) return
+    onFile?.(f)
     setBusy(true)
-    try { const nid = await addPhoto(f); if (id) void removePhoto(id); onChange(nid) } catch { alert('Cette image ne peut pas être lue.') }
+    try { const nid = await addPhoto(f); if (id && !keepOld) void removePhoto(id); onChange(nid) } catch { alert('Cette image ne peut pas être lue.') }
     setBusy(false)
   }
   return (
@@ -45,7 +48,7 @@ export function PhotoThumb({ id, fallback, onChange, size = 56, round, label = '
         <span className="pthumb-cam">{busy ? '…' : '📷'}</span>
         <input type="file" accept="image/*" onChange={pick} hidden />
       </label>
-      {id && <button type="button" className="pthumb-x" onClick={() => confirm('Retirer la photo ?') && (void removePhoto(id), onChange(undefined))} aria-label="Retirer la photo">×</button>}
+      {id && <button type="button" className="pthumb-x" onClick={() => confirm('Retirer la photo ?') && ((!keepOld && void removePhoto(id)), onChange(undefined))} aria-label="Retirer la photo">×</button>}
     </div>
   )
 }

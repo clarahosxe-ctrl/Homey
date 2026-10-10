@@ -419,3 +419,6 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transp
 
 a.tag { text-decoration: none; display: block; }
 .tag.more { color: var(--ink-2); border-color: var(--line); font-weight: 600; }
+
+.cardphoto { width: 100%; max-height: 62vh; object-fit: contain; border-radius: 12px; background: #f4f4f4; }
+.ticket { max-height: 92vh; overflow: auto; }
