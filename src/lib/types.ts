@@ -226,3 +226,21 @@ export interface Wish {
   note: string
   by: string
 }
+
+/** Fiche détaillée d'un animal (étend le socle "suivi" : mêmes id/name/emoji/extra). */
+export interface Pet extends TrackerSubject {
+  species?: string // chien | chat | lapin | rongeur | oiseau | poisson | reptile | cheval | autre
+  breed?: string
+  sex?: 'm' | 'f' | ''
+  neutered?: 'oui' | 'non' | ''
+  birth?: string
+  color?: string
+  chip?: string
+  food?: string
+  vetName?: string
+  vetPhone?: string
+  insurer?: string
+  insuranceNo?: string
+  insurancePrice?: number // €/mois
+  notes?: string
+}

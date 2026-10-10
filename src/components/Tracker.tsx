@@ -30,6 +30,7 @@ export function dueItems(subjects: TrackerSubject[], records: TrackerRecord[], h
     const subject = subjects.find((s) => s.id === r.subject)
     if (!subject || !r.next) continue
     const days = daysBetween(new Date(), parse(r.next))
+    if (r.kind === 'rdv' && days < 0) continue // un rendez-vous passé n'est pas en retard
     if (days <= horizonDays) out.push({ subject, kind: r.kind, next: r.next, days })
   }
   return out.sort((a, b) => a.days - b.days)
@@ -41,7 +42,7 @@ export function useDues(horizonDays = 30) {
   for (const c of TRACKERS) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { subjects, records } = useTracker(c.key)
-    out[c.key] = dueItems(subjects, records, horizonDays).map((d) => ({ ...d, icon: c.kinds.find((k) => k.id === d.kind)?.icon ?? c.emojis[0] }))
+    out[c.key] = dueItems(subjects, records, horizonDays).map((d) => ({ ...d, icon: c.kinds.find((k) => k.id === d.kind.split(':')[0])?.icon ?? c.emojis[0] }))
   }
   return out
 }
