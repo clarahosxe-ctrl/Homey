@@ -25,11 +25,13 @@ export const MODULES: ModuleInfo[] = [
   { id: 'maison', title: 'Maison', icon: '🔧', hue: '#8a6d4f', tint: ['#ead7bf', '#d9bd9a'], blurb: 'Entretien, garanties, travaux', ready: true },
   { id: 'jardin', title: 'Jardin & plantes', icon: '🪴', hue: '#4f8f4f', tint: ['#cfe6c4', '#b2d6a2'], blurb: 'Arrosage, engrais, tailles', ready: true },
   { id: 'abonnements', title: 'Abonnements', icon: '🔁', hue: '#6f68b8', tint: ['#d9d6ef', '#bfbae2'], blurb: 'Renouvellements et coût total', ready: true },
+  { id: 'bebe', title: 'Bébé', icon: '👶', hue: '#d98a7a', tint: ['#fbdcd5', '#f4c2b8'], blurb: 'Biberons, couches, sommeil, croissance', ready: true },
+  { id: 'enfants', title: 'Enfants', icon: '🎒', hue: '#d49a30', tint: ['#fae0aa', '#f1c97a'], blurb: 'École, activités, vacances', ready: true },
+  { id: 'documents', title: 'Documents', icon: '📁', hue: '#8a8068', tint: ['#e0d9c6', '#cbc2a8'], blurb: 'Papiers, contrats, échéances', ready: true },
+  { id: 'energie', title: 'Énergie', icon: '⚡', hue: '#c9a820', tint: ['#fbf0b0', '#f2e07a'], blurb: 'Relevés de compteurs, factures', ready: true },
+  { id: 'envies', title: 'Envies', icon: '✨', hue: '#c85a96', tint: ['#f6cde0', '#ecaccb'], blurb: 'Sorties, restos, films à voir', ready: true },
   { id: 'repas', title: 'Repas', icon: '🍽️', hue: '#b8861f', tint: ['#f3e6bd', '#e6d296'], blurb: 'Menu de la semaine, recettes → courses', ready: true },
   // idées proposées
-  { id: 'documents', title: 'Documents', icon: '📁', hue: '#5a6fa8', blurb: 'Papiers, contrats, dates d’échéance', ready: false },
-  { id: 'enfants', title: 'Enfants', icon: '🎒', hue: '#e0a030', blurb: 'École, activités, vacances scolaires', ready: false },
-  { id: 'energie', title: 'Énergie', icon: '⚡', hue: '#d4b020', blurb: 'Relevés compteurs, factures', ready: false },
   { id: 'souvenirs', title: 'Souvenirs', icon: '📸', hue: '#7a6fb0', blurb: 'Journal du foyer, photos du mois', ready: false },
   { id: 'wishlist', title: 'Envies', icon: '✨', hue: '#d06a9a', blurb: 'Sorties, restos, films à voir', ready: false },
 ]

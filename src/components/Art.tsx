@@ -173,6 +173,57 @@ art.abonnements = (
   </>
 )
 
+art.bebe = (
+  <>
+    <rect x="30" y="52" width="56" height="86" rx="12" fill={W} stroke={G} strokeWidth="5" />
+    <rect x="30" y="76" width="56" height="10" fill={BL} /><rect x="30" y="96" width="56" height="6" fill={BL} opacity=".6" /><rect x="30" y="110" width="56" height="6" fill={BL} opacity=".6" />
+    <rect x="38" y="38" width="40" height="16" rx="5" fill={G} />
+    <path d="M44 38q14-26 28 0z" fill={B} />
+    <circle cx="136" cy="100" r="40" fill={Y} />
+    <circle cx="160" cy="68" r="24" fill={Y} />
+    <path d="M178 66l18 6-18 8z" fill={T} />
+    <circle cx="164" cy="62" r="4" fill={G} />
+    <path d="M110 112q26 22 54-8" fill="none" stroke="#c99f25" strokeWidth="5" strokeLinecap="round" />
+  </>
+)
+art.enfants = (
+  <>
+    <path d="M70 40q0-22 30-22t30 22" fill="none" stroke={G} strokeWidth="9" strokeLinecap="round" />
+    <rect x="46" y="38" width="108" height="100" rx="26" fill={T} />
+    <rect x="62" y="88" width="76" height="40" rx="10" fill="#a8452b" />
+    <rect x="86" y="98" width="28" height="8" rx="3" fill={Y} />
+    <path d="M46 70q-22 10-22 40 0 14 12 14h10z" fill={G} /><path d="M154 70q22 10 22 40 0 14-12 14h-10z" fill={G} />
+    <rect x="164" y="26" width="12" height="62" rx="3" fill={Y} transform="rotate(14 170 57)" />
+    <path d="M160 88l12 4-8 16z" fill={B} transform="rotate(14 170 57)" />
+  </>
+)
+art.documents = (
+  <>
+    <rect x="62" y="16" width="100" height="116" rx="5" fill={G} />
+    <rect x="46" y="32" width="104" height="110" rx="5" fill={T} />
+    <rect x="34" y="46" width="108" height="96" rx="5" fill={W} />
+    <path d="M14 70h58l10 12h106v62H14z" fill={B} />
+    <rect x="30" y="96" width="60" height="6" rx="3" fill="#c7ad82" /><rect x="30" y="110" width="40" height="6" rx="3" fill="#c7ad82" />
+  </>
+)
+art.energie = (
+  <>
+    <circle cx="100" cy="68" r="48" fill={Y} />
+    <circle cx="100" cy="68" r="48" fill="none" stroke="#c99f25" strokeWidth="5" />
+    <path d="M108 34L80 74h18l-8 30 32-44h-20z" fill={W} />
+    <path d="M76 108h48v12q0 8-8 8H84q-8 0-8-8z" fill={G} /><rect x="82" y="128" width="36" height="12" rx="5" fill={G2} />
+    <path d="M30 40l12 8M170 40l-12 8M20 78h14M166 78h14" stroke="#c99f25" strokeWidth="5" strokeLinecap="round" />
+  </>
+)
+art.envies = (
+  <>
+    <path d="M100 18l16 38 40 4-30 28 9 40-35-21-35 21 9-40-30-28 40-4z" fill={Y} stroke="#c99f25" strokeWidth="4" strokeLinejoin="round" />
+    <path d="M52 100c-14-12-26-26-14-40 8-8 18-4 22 4 4-8 16-12 22-2 10 16-12 28-30 38z" fill={T} transform="translate(8 28) scale(1.15)" />
+    <circle cx="164" cy="30" r="7" fill={G} /><circle cx="28" cy="40" r="5" fill={G2} />
+    <path d="M168 110l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" fill={W} />
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

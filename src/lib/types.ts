@@ -155,3 +155,50 @@ export interface Subscription {
   notice?: number // préavis de résiliation (jours)
   by: string
 }
+
+export interface Baby {
+  id: string
+  name: string
+  birth: string // YYYY-MM-DD
+}
+
+export type BabyKind = 'biberon' | 'tetee' | 'couche' | 'sommeil' | 'mesure' | 'jalon'
+
+export interface BabyLog {
+  id: string
+  baby: string
+  kind: BabyKind
+  at: string // YYYY-MM-DDTHH:mm (heure locale)
+  end?: string // sommeil : heure de réveil (absent = il dort encore)
+  value?: number // ml (biberon) ou minutes (tétée)
+  detail?: string // couche : pipi | selle | mixte
+  weight?: number // kg (mesure)
+  height?: number // cm (mesure)
+  note: string
+  by: string
+}
+
+export interface Meter {
+  id: string
+  name: string
+  emoji: string
+  unit: string
+}
+
+export interface Reading {
+  id: string
+  meter: string
+  date: string
+  index: number
+  cost?: number
+}
+
+export interface Wish {
+  id: string
+  title: string
+  category: string
+  done: boolean
+  likes: string[] // member ids
+  note: string
+  by: string
+}

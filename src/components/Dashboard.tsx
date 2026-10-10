@@ -13,6 +13,9 @@ import { TRACKERS } from '../modules/trackers'
 import { nextRenewal, useSubs } from '../modules/Abonnements'
 import { useTxns, monthKey } from '../modules/Budget'
 import { useTrips } from '../modules/Voyages'
+import { lastFeedBadge, useBabies, useBabyLog } from '../modules/Bebe'
+import { metersToRead, useMeters, useReadings } from '../modules/Energie'
+import { useWishes } from '../modules/Envies'
 import { useCards } from '../modules/Fidelite'
 import Art from './Art'
 import Weather from './Weather'
@@ -32,6 +35,11 @@ export default function Dashboard({ household, hhName }: { household: Household;
   const [trips] = useTrips()
   const dues = useDues(30)
   const [subs] = useSubs()
+  const [babies] = useBabies()
+  const [babyLog] = useBabyLog()
+  const [meters] = useMeters()
+  const [readings] = useReadings()
+  const [wishes] = useWishes()
   const renewSoon = subs.filter((x) => { const n = nextRenewal(x); return n && daysBetween(new Date(), n) <= 7 }).length
   const nextTrip = [...trips].filter((t) => t.to >= iso(new Date())).sort((a, b) => a.from.localeCompare(b.from))[0]
   const tripBadge = nextTrip ? (nextTrip.from <= iso(new Date()) ? '✈️' : `J-${daysBetween(new Date(), new Date(nextTrip.from + 'T00:00'))}`) : undefined
@@ -55,6 +63,9 @@ export default function Dashboard({ household, hhName }: { household: Household;
     voyages: tripBadge,
     ...Object.fromEntries(TRACKERS.map((t) => [t.moduleId, dues[t.key].length || undefined])),
     abonnements: renewSoon || undefined,
+    bebe: lastFeedBadge(babies, babyLog),
+    energie: metersToRead(meters, readings) || undefined,
+    envies: wishes.filter((w) => !w.done).length || undefined,
     budget: spentMonth ? `${Math.round(spentMonth)}€` : undefined,
     repas: meals.filter((m) => m.date === iso(new Date())).length || undefined,
     cadeaux: gifts.filter((g) => g.status === 'achete' && g.forId !== household.current.id).length || undefined,

@@ -105,8 +105,8 @@ export default function Tracker({ config, household }: { config: TrackerConfig; 
         const spent = mine.filter((r) => r.date.startsWith(year)).reduce((t, r) => t + (r.cost ?? 0), 0)
         return (
           <section key={s.id} className="panel stack">
-            <div className="row between">
-              <div className="row" style={{ alignItems: 'center' }}>
+            <div className="row between nowrap">
+              <div className="row nowrap" style={{ alignItems: 'center', minWidth: 0 }}>
                 <span className="chore-icon">{s.emoji}</span>
                 <div>
                   <strong>{s.name}</strong>

@@ -120,4 +120,43 @@ export const PLANTS: TrackerConfig = {
 }
 
 /** Toutes les mini-applis basées sur le socle "suivi". L'ordre doit rester constant (hooks). */
-export const TRACKERS: TrackerConfig[] = [PETS, VEHICLES, HEALTH, HOME, PLANTS]
+export const DOCUMENTS: TrackerConfig = {
+  key: 'documents',
+  moduleId: 'documents',
+  newLabel: 'Nouveau document',
+  addLabel: '+ Ajouter un document',
+  subjectLabel: 'document',
+  emojis: ['🛂', '🪪', '📄', '📑', '🏦', '🔐', '🏠', '🚗', '🎓'],
+  extraLabel: 'Numéro / référence',
+  extraType: 'text',
+  kinds: [
+    { id: 'validite', label: 'Validité / expiration', icon: '⏳' },
+    { id: 'renouvele', label: 'Renouvelé', icon: '🔁' },
+    { id: 'contrat', label: 'Contrat / échéance', icon: '📑' },
+    { id: 'demarche', label: 'Démarche à faire', icon: '📮' },
+    { id: 'autre', label: 'Autre', icon: '📌' },
+  ],
+  empty: 'Passeport, carte d’identité, contrats… Ajoutez un premier document 📁',
+}
+
+export const KIDS: TrackerConfig = {
+  key: 'kids',
+  moduleId: 'enfants',
+  newLabel: 'Nouvel enfant',
+  addLabel: '+ Ajouter un enfant',
+  subjectLabel: 'enfant',
+  emojis: ['👧', '👦', '🧒', '👶', '🧑'],
+  extraLabel: 'École / classe',
+  extraType: 'text',
+  kinds: [
+    { id: 'ecole', label: 'École (réunion, sortie)', icon: '🏫' },
+    { id: 'activite', label: 'Activité (inscription)', icon: '🎨', everyDays: 365 },
+    { id: 'vacances', label: 'Vacances (reprise)', icon: '🏖️' },
+    { id: 'cantine', label: 'Cantine / garderie', icon: '🍽️', everyDays: 30 },
+    { id: 'rdv', label: 'Rendez-vous', icon: '🗓️' },
+    { id: 'autre', label: 'Autre', icon: '📌' },
+  ],
+  empty: 'Ajoutez vos enfants pour suivre école, activités et vacances 🎒',
+}
+
+export const TRACKERS: TrackerConfig[] = [PETS, VEHICLES, HEALTH, HOME, PLANTS, DOCUMENTS, KIDS]

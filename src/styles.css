@@ -266,3 +266,16 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transp
 .bar.thin { height: 6px; }
 .trip { display: flex; align-items: center; gap: 12px; width: 100%; font: inherit; color: inherit; cursor: pointer; }
 .trip:hover { border-color: var(--accent); }
+
+/* Envies / Bébé */
+.like { border: 1.5px solid var(--line); background: var(--bg); border-radius: 999px; padding: 3px 10px; cursor: pointer; font: 600 0.82rem var(--sans); color: var(--ink-2); flex: none; }
+.like.on { border-color: #e0679a; color: #c0457c; background: #fde8f1; }
+.quick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.quick button { border: 0; border-radius: 18px; padding: 16px 10px; font: 700 1rem var(--sans); cursor: pointer; background: var(--surface-2); color: var(--ink); display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.quick button span { font-size: 1.7rem; }
+.quick button.on { background: var(--accent); color: #fff; }
+.sum { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.sum div { background: var(--bg); border-radius: 14px; padding: 10px 4px; }
+.sum strong { display: block; font-size: 1.15rem; }
+.sum span { font-size: 0.72rem; color: var(--ink-2); }
+.row.nowrap { flex-wrap: nowrap; }
