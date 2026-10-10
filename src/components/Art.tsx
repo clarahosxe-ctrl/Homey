@@ -90,6 +90,48 @@ art.repas = (
   </>
 )
 
+art.animaux = (
+  <>
+    <ellipse cx="100" cy="104" rx="40" ry="32" fill={G} />
+    <ellipse cx="52" cy="66" rx="15" ry="19" fill={G} transform="rotate(-18 52 66)" />
+    <ellipse cx="86" cy="42" rx="15" ry="19" fill={G} />
+    <ellipse cx="124" cy="42" rx="15" ry="19" fill={G} />
+    <ellipse cx="160" cy="66" rx="15" ry="19" fill={G} transform="rotate(18 160 66)" />
+    <path d="M178 118l16-10a9 9 0 1 1 6 12 9 9 0 1 1-4 12l-18-6z" fill={B} />
+    <ellipse cx="100" cy="108" rx="17" ry="12" fill={T} />
+  </>
+)
+art.vehicules = (
+  <>
+    <path d="M44 74l22-34q4-6 12-6h52q8 0 13 6l24 34z" fill={W} stroke={G} strokeWidth="5" strokeLinejoin="round" />
+    <path d="M72 70l14-26h20v26zM116 70V44h18l16 26z" fill={BL} />
+    <rect x="16" y="70" width="168" height="52" rx="14" fill={T} />
+    <rect x="158" y="82" width="20" height="12" rx="4" fill={Y} />
+    <circle cx="54" cy="124" r="20" fill={G} /><circle cx="54" cy="124" r="8" fill={B} />
+    <circle cx="146" cy="124" r="20" fill={G} /><circle cx="146" cy="124" r="8" fill={B} />
+  </>
+)
+art.budget = (
+  <>
+    <rect x="120" y="42" width="22" height="94" rx="3" fill={G} />
+    <rect x="148" y="20" width="22" height="116" rx="3" fill={G2} />
+    <rect x="92" y="78" width="22" height="58" rx="3" fill={T} />
+    <rect x="22" y="40" width="64" height="96" rx="8" fill={G} transform="rotate(-8 54 88)" />
+    <rect x="30" y="48" width="48" height="20" rx="3" fill={B} transform="rotate(-8 54 88)" />
+    <g fill={W} transform="rotate(-8 54 88)"><rect x="32" y="78" width="12" height="10" rx="2" /><rect x="50" y="78" width="12" height="10" rx="2" /><rect x="68" y="78" width="12" height="10" rx="2" /><rect x="32" y="96" width="12" height="10" rx="2" /><rect x="50" y="96" width="12" height="10" rx="2" /><rect x="68" y="96" width="12" height="10" rx="2" /></g>
+    <ellipse cx="110" cy="136" rx="30" ry="9" fill={Y} /><ellipse cx="110" cy="130" rx="30" ry="9" fill="#f0cb55" />
+  </>
+)
+art.voyages = (
+  <>
+    <path d="M70 52v-12q0-8 8-8h28q8 0 8 8v12" fill="none" stroke={G} strokeWidth="8" strokeLinecap="round" />
+    <rect x="40" y="52" width="100" height="84" rx="12" fill={T} />
+    <rect x="62" y="52" width="10" height="84" fill="#a8452b" /><rect x="108" y="52" width="10" height="84" fill="#a8452b" />
+    <rect x="40" y="86" width="100" height="8" fill="#a8452b" opacity=".5" />
+    <path d="M132 40l56-22-8 12 18 4-52 22-10 20-8-4 4-22-28-10 4-8z" fill={W} stroke={G} strokeWidth="3" strokeLinejoin="round" transform="translate(-4 4) scale(.8)" />
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

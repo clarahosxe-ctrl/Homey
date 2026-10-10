@@ -8,6 +8,9 @@ import { daysLeft, useChores } from '../modules/Taches'
 import { nextBirthday, useBirthdays } from '../modules/Anniversaires'
 import { useGifts } from '../modules/Cadeaux'
 import { useMeals } from '../modules/Repas'
+import { dueItems, useTracker } from './Tracker'
+import { useTxns, monthKey } from '../modules/Budget'
+import { useTrips } from '../modules/Voyages'
 import { useCards } from '../modules/Fidelite'
 import Art from './Art'
 import Weather from './Weather'
@@ -23,6 +26,13 @@ export default function Dashboard({ household, hhName }: { household: Household;
   const [birthdays] = useBirthdays()
   const [gifts] = useGifts()
   const [meals] = useMeals()
+  const [txns] = useTxns()
+  const [trips] = useTrips()
+  const pets = useTracker('pets')
+  const cars = useTracker('vehicles')
+  const nextTrip = [...trips].filter((t) => t.to >= iso(new Date())).sort((a, b) => a.from.localeCompare(b.from))[0]
+  const tripBadge = nextTrip ? (nextTrip.from <= iso(new Date()) ? '✈️' : `J-${daysBetween(new Date(), new Date(nextTrip.from + 'T00:00'))}`) : undefined
+  const spentMonth = txns.filter((t) => !t.income && t.date.startsWith(monthKey(0))).reduce((s, t) => s + t.amount, 0)
   const soonBirthdays = birthdays.filter((b) => daysBetween(new Date(), nextBirthday(b)) <= 7).length
 
   const toBuy = shopping.filter((i) => !i.done).length
@@ -39,6 +49,10 @@ export default function Dashboard({ household, hhName }: { household: Household;
     poubelles: soonest && delta <= 1 ? (delta === 0 ? 'auj.' : 'dem.') : undefined,
     fidelite: cards.length || undefined,
     anniversaires: soonBirthdays || undefined,
+    voyages: tripBadge,
+    animaux: dueItems(pets.subjects, pets.records).length || undefined,
+    vehicules: dueItems(cars.subjects, cars.records).length || undefined,
+    budget: spentMonth ? `${Math.round(spentMonth)}€` : undefined,
     repas: meals.filter((m) => m.date === iso(new Date())).length || undefined,
     cadeaux: gifts.filter((g) => g.status === 'achete' && g.forId !== household.current.id).length || undefined,
   }

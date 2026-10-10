@@ -94,3 +94,53 @@ export interface Meal {
   ingredients: string[]
   inCourses: boolean // ingrédients déjà envoyés aux courses
 }
+
+/** Socle générique "suivi" (animaux, véhicules…) : des sujets et un journal d'événements avec rappel. */
+export interface TrackerSubject {
+  id: string
+  name: string
+  emoji: string
+  extra: string // date de naissance, plaque…
+}
+
+export interface TrackerRecord {
+  id: string
+  subject: string
+  kind: string
+  date: string
+  next: string // prochaine échéance (YYYY-MM-DD) ou ''
+  metric?: number // poids, kilométrage…
+  cost?: number
+  note: string
+  by: string
+}
+
+export interface Txn {
+  id: string
+  date: string
+  label: string
+  amount: number
+  category: string
+  by: string // payeur (member id)
+  shared: boolean // dépense commune à répartir
+  income: boolean
+}
+
+export interface TripItem {
+  id: string
+  date: string
+  label: string
+  kind: string
+  cost?: number
+}
+
+export interface Trip {
+  id: string
+  name: string
+  destination: string
+  from: string
+  to: string
+  budget?: number
+  plan: TripItem[]
+  packing: { id: string; label: string; done: boolean }[]
+}

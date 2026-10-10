@@ -5,14 +5,7 @@ import Avatar from './components/Avatar'
 import ProfileSheet from './components/ProfileSheet'
 import { useMembers } from './lib/household'
 import { getHousehold } from './lib/sync'
-import Anniversaires from './modules/Anniversaires'
-import Cadeaux from './modules/Cadeaux'
-import Courses from './modules/Courses'
-import Fidelite from './modules/Fidelite'
-import Poubelles from './modules/Poubelles'
-import Repas from './modules/Repas'
-import Taches from './modules/Taches'
-import Travail from './modules/Travail'
+import { VIEWS } from './modules/views'
 import { getModule } from './modules/registry'
 
 const useRoute = () => {
@@ -53,15 +46,7 @@ export default function App() {
         </button>
       </header>
       <main>
-        {household.needsProfile ? null : !active && <Dashboard household={household} hhName={hhName} />}
-        {active?.id === 'courses' && <Courses household={household} />}
-        {active?.id === 'poubelles' && <Poubelles />}
-        {active?.id === 'travail' && <Travail household={household} />}
-        {active?.id === 'taches' && <Taches household={household} />}
-        {active?.id === 'anniversaires' && <Anniversaires />}
-        {active?.id === 'cadeaux' && <Cadeaux household={household} />}
-        {active?.id === 'repas' && <Repas household={household} />}
-        {active?.id === 'fidelite' && <Fidelite household={household} />}
+        {!household.needsProfile && (active ? (() => { const View = VIEWS[active.id]; return View ? <View household={household} /> : null })() : <Dashboard household={household} hhName={hhName} />)}
       </main>
       {(household.needsProfile || profileOpen) && (
         <ProfileSheet household={household} welcome={household.needsProfile} onClose={() => setProfileOpen(false)} />
