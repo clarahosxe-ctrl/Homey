@@ -134,6 +134,9 @@ export interface TrackerRecord {
   date: string
   next: string // prochaine échéance (YYYY-MM-DD) ou ''
   metric?: number // poids, kilométrage…
+  nextMetric?: number // prochain kilométrage visé (entretien)
+  qty?: number // litres ou kWh (plein / recharge)
+  detail?: string // lieu de recharge, etc.
   cost?: number
   note: string
   by: string
@@ -242,5 +245,26 @@ export interface Pet extends TrackerSubject {
   insurer?: string
   insuranceNo?: string
   insurancePrice?: number // €/mois
+  notes?: string
+}
+
+export interface Vehicle extends TrackerSubject {
+  kind?: string // voiture | utilitaire | moto | scooter | velo | camping-car | autre
+  brand?: string
+  model?: string
+  color?: string
+  year?: number
+  vin?: string
+  energy?: string // essence | diesel | hybride | phev | electrique | gpl | autre
+  km?: number
+  kmDate?: string
+  insurer?: string
+  insuranceNo?: string
+  insuranceFormula?: string
+  insurancePrice?: number // €/mois
+  battery?: number // kWh (électrique / hybride rechargeable)
+  range?: number // autonomie annoncée (km)
+  homeRate?: number // tarif de recharge à domicile (€/kWh)
+  tires?: { fitted?: string; km?: number; size?: string; brand?: string; depth?: number; lifespan?: number }
   notes?: string
 }

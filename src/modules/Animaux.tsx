@@ -1,13 +1,12 @@
 import { useState } from 'react'
+import { CheckRow, FreeForm, euro, lastOf, when, type Saved } from '../components/CheckRow'
 import { dueItems } from '../components/Tracker'
 import type { Household } from '../lib/household'
-import { addDays, daysBetween, fmtShort, iso, parse } from '../lib/dates'
+import { daysBetween, fmtShort, iso, parse } from '../lib/dates'
 import { uid, useStored } from '../lib/storage'
 import type { Pet, TrackerRecord } from '../lib/types'
 import { BREEDS, EXPENSES, SOINS, SOINS_DEFAULT, SPECIES, VACCINES, slug, speciesOf, type Item } from './animauxCatalog'
 
-const euro = (n: number) => n.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 })
-const when = (d: number) => (d < 0 ? `en retard de ${-d} j` : d === 0 ? "aujourd'hui" : d === 1 ? 'demain' : `dans ${d} j`)
 
 function ageOf(birth?: string) {
   if (!birth) return ''
@@ -19,13 +18,6 @@ function ageOf(birth?: string) {
   return `${Math.floor(m / 12)} an${m >= 24 ? 's' : ''}`
 }
 
-/** Date courte ; l'année n'est précisée que si ce n'est pas l'année en cours. */
-const fmtY = (iso_: string) => {
-  const d = parse(iso_)
-  return d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', ...(d.getFullYear() !== new Date().getFullYear() ? { year: 'numeric' as const } : {}) })
-}
-
-const lastOf = (recs: TrackerRecord[], kind: string) => recs.filter((r) => r.kind === kind).sort((a, b) => b.date.localeCompare(a.date))[0]
 
 function kindLabel(kind: string, pet: Pet, recs: TrackerRecord[]) {
   const [base, sub] = kind.split(':')
@@ -187,71 +179,6 @@ function Fiche({ pet, patch, neuterWord, onDelete }: { pet: Pet; patch: (p: Part
   )
 }
 
-/* ---------------- Ligne à cocher ---------------- */
-function CheckRow({ label, hint, icon, every, last, quick, onSave, onClear }: {
-  label: string; hint?: string; icon?: string; every: number; last?: TrackerRecord; quick?: boolean
-  onSave: (d: { date: string; next: string; cost?: number }) => void; onClear: () => void
-}) {
-  const [open, setOpen] = useState(false)
-  const [date, setDate] = useState(iso(new Date()))
-  const [next, setNext] = useState('')
-  const [cost, setCost] = useState('')
-  const days = last?.next ? daysBetween(new Date(), parse(last.next)) : null
-  const edit = () => { const d = iso(new Date()); setDate(d); setNext(iso(addDays(new Date(), every))); setCost(''); setOpen(!open) }
-
-  return (
-    <li className="vrow">
-      <div className="row nowrap" style={{ alignItems: 'center' }}>
-        <button className={'tick' + (last ? ' on' : '')} onClick={edit} aria-label={`${label} : noter une date`} aria-pressed={!!last}>{last ? '✓' : ''}</button>
-        <div className="grow">
-          <strong>{icon && `${icon} `}{label}</strong>
-          {hint && <div className="sub">{hint}</div>}
-          <div className="sub">{last ? `Fait le ${fmtY(last.date)}${last.next ? ` · rappel le ${fmtY(last.next)}` : ''}` : 'Pas encore noté'}</div>
-        </div>
-        {days !== null && <span className="pill" data-hot={days <= 14}>{when(days)}</span>}
-        {quick && <button className="btn small" onClick={() => onSave({ date: iso(new Date()), next: iso(addDays(new Date(), every)) })}>Fait ✓</button>}
-        {last && <button className="icon-btn" onClick={() => confirm(`Retirer « ${label} » ?`) && onClear()} aria-label={`Retirer ${label}`}>×</button>}
-      </div>
-      {open && (
-        <form className="stack vform" onSubmit={(e) => { e.preventDefault(); onSave({ date, next, cost: cost ? Number(cost) : undefined }); setOpen(false) }}>
-          <div className="row">
-            <label className="field">Date<input type="date" value={date} onChange={(e) => { setDate(e.target.value); setNext(iso(addDays(parse(e.target.value), every))) }} /></label>
-            <label className="field">Prochain rappel<input type="date" value={next} min={date} onChange={(e) => setNext(e.target.value)} /></label>
-            <label className="field">Coût (€)<input type="number" min={0} step="0.01" value={cost} onChange={(e) => setCost(e.target.value)} style={{ width: 90 }} /></label>
-          </div>
-          <div className="row">
-            <button className="btn primary small">Enregistrer</button>
-            <button type="button" className="btn ghost small" onClick={() => setOpen(false)}>Annuler</button>
-          </div>
-        </form>
-      )}
-    </li>
-  )
-}
-
-/** Ajout d'un élément hors liste (champ libre). */
-function FreeForm({ placeholder, every, onAdd }: { placeholder: string; every: number; onAdd: (name: string, d: { date: string; next: string; cost?: number }) => void }) {
-  const [name, setName] = useState('')
-  const [date, setDate] = useState(iso(new Date()))
-  const [next, setNext] = useState(iso(addDays(new Date(), every)))
-  const [cost, setCost] = useState('')
-  return (
-    <form className="stack vform" onSubmit={(e) => {
-      e.preventDefault()
-      if (!name.trim()) return
-      onAdd(name.trim(), { date, next, cost: cost ? Number(cost) : undefined }); setName(''); setCost('')
-    }}>
-      <input value={name} onChange={(e) => setName(e.target.value)} placeholder={placeholder} />
-      <div className="row">
-        <label className="field">Date<input type="date" value={date} onChange={(e) => { setDate(e.target.value); setNext(iso(addDays(parse(e.target.value), every))) }} /></label>
-        <label className="field">Rappel<input type="date" value={next} min={date} onChange={(e) => setNext(e.target.value)} /></label>
-        <label className="field">Coût (€)<input type="number" min={0} step="0.01" value={cost} onChange={(e) => setCost(e.target.value)} style={{ width: 90 }} /></label>
-      </div>
-      <button className="btn small">+ Ajouter</button>
-    </form>
-  )
-}
-
 /* ---------------- Santé ---------------- */
 function Sante({ pet, recs, addRec, clearKind, setRecords }: {
   pet: Pet; recs: TrackerRecord[]; addRec: AddRec; clearKind: (k: string) => void; setRecords: (u: (r: TrackerRecord[]) => TrackerRecord[]) => void
@@ -269,7 +196,7 @@ function Sante({ pet, recs, addRec, clearKind, setRecords }: {
   const [weight, setWeight] = useState('')
   const weights = recs.filter((r) => r.kind === 'poids').sort((a, b) => b.date.localeCompare(a.date))
 
-  const save = (kind: string, note = '') => (d: { date: string; next: string; cost?: number }) => addRec({ kind, date: d.date, next: d.next, cost: d.cost, note: note || undefined })
+  const save = (kind: string, note = '') => (d: Saved) => addRec({ kind, date: d.date, next: d.next, cost: d.cost, note: note || undefined })
 
   return (
     <div className="stack">
