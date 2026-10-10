@@ -1,5 +1,5 @@
 import type { Household } from '../lib/household'
-import { daysBetween, fmtLong } from '../lib/dates'
+import { daysBetween, fmtLong, iso } from '../lib/dates'
 import { nextPickup } from '../lib/recurrence'
 import { MODULES } from '../modules/registry'
 import { useShopping } from '../modules/Courses'
@@ -7,6 +7,7 @@ import { useBins } from '../modules/Poubelles'
 import { daysLeft, useChores } from '../modules/Taches'
 import { nextBirthday, useBirthdays } from '../modules/Anniversaires'
 import { useGifts } from '../modules/Cadeaux'
+import { useMeals } from '../modules/Repas'
 import { useCards } from '../modules/Fidelite'
 import Art from './Art'
 import Weather from './Weather'
@@ -21,6 +22,7 @@ export default function Dashboard({ household, hhName }: { household: Household;
   const [cards] = useCards()
   const [birthdays] = useBirthdays()
   const [gifts] = useGifts()
+  const [meals] = useMeals()
   const soonBirthdays = birthdays.filter((b) => daysBetween(new Date(), nextBirthday(b)) <= 7).length
 
   const toBuy = shopping.filter((i) => !i.done).length
@@ -37,6 +39,7 @@ export default function Dashboard({ household, hhName }: { household: Household;
     poubelles: soonest && delta <= 1 ? (delta === 0 ? 'auj.' : 'dem.') : undefined,
     fidelite: cards.length || undefined,
     anniversaires: soonBirthdays || undefined,
+    repas: meals.filter((m) => m.date === iso(new Date())).length || undefined,
     cadeaux: gifts.filter((g) => g.status === 'achete' && g.forId !== household.current.id).length || undefined,
   }
 

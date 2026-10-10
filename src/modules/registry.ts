@@ -17,12 +17,12 @@ export const MODULES: ModuleInfo[] = [
   { id: 'fidelite', title: 'Cartes de fidélité', icon: '💳', hue: '#8a6fb0', tint: ['#ddd3ea', '#c8bbdc'], blurb: 'Codes-barres de toutes vos cartes', ready: true },
   { id: 'anniversaires', title: 'Anniversaires', icon: '🎂', hue: '#c4607e', tint: ['#f2d3dc', '#e6b9c6'], blurb: 'Dates, âges, rappels', ready: true },
   { id: 'cadeaux', title: 'Cadeaux', icon: '🎁', hue: '#c9722e', tint: ['#f5dcc4', '#ebc2a0'], blurb: 'Idées par personne, déjà offert', ready: true },
+  { id: 'repas', title: 'Repas', icon: '🍽️', hue: '#b8861f', tint: ['#f3e6bd', '#e6d296'], blurb: 'Menu de la semaine, recettes → courses', ready: true },
   { id: 'voyages', title: 'Voyages', icon: '✈️', hue: '#3f8fa0', blurb: 'Planifier, budgéter, checklist valises', ready: false },
   { id: 'animaux', title: 'Animaux', icon: '🐾', hue: '#c9922e', blurb: 'Vaccins, vétérinaire, poids, traitements', ready: false },
   { id: 'budget', title: 'Budget', icon: '💶', hue: '#6b8f3a', blurb: 'Dépenses, abonnements, objectifs', ready: false },
   { id: 'vehicules', title: 'Véhicules', icon: '🚗', hue: '#6a7480', blurb: 'Entretien, CT, assurance, carburant', ready: false },
   // idées proposées
-  { id: 'repas', title: 'Repas', icon: '🍽️', hue: '#d98a3a', blurb: 'Menu de la semaine, recettes → courses', ready: false },
   { id: 'maison', title: 'Maison', icon: '🔧', hue: '#8a6d4f', blurb: 'Entretien, travaux, garanties, artisans', ready: false },
   { id: 'documents', title: 'Documents', icon: '📁', hue: '#5a6fa8', blurb: 'Papiers, contrats, dates d’échéance', ready: false },
   { id: 'abonnements', title: 'Abonnements', icon: '🔁', hue: '#a85a7a', blurb: 'Renouvellements et résiliations', ready: false },

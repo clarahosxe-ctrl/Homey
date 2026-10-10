@@ -4,12 +4,14 @@ import { DAY_SHORT, addDays, iso, isSameDay, weekDays } from '../lib/dates'
 import { binOccursOn } from '../lib/recurrence'
 import { useBins } from '../modules/Poubelles'
 import { birthdayOn, useBirthdays } from '../modules/Anniversaires'
+import { useMeals } from '../modules/Repas'
 import { WORK_KINDS, useWork } from '../modules/Travail'
 
 export default function WeekCalendar({ household }: { household: Household }) {
   const [bins] = useBins()
   const [work] = useWork()
   const [birthdays] = useBirthdays()
+  const [meals] = useMeals()
   const [offset, setOffset] = useState(0)
   const days = weekDays(addDays(new Date(), offset * 7))
   const today = new Date()
@@ -35,6 +37,9 @@ export default function WeekCalendar({ household }: { household: Household }) {
               <div className="day-body">
                 {birthdays.filter((b) => birthdayOn(b, d)).map((b) => (
                   <span key={b.id} className="tag" style={{ background: '#c4607e' }} title={`Anniversaire de ${b.name}`}>🎂<b>{b.name}</b></span>
+                ))}
+                {meals.filter((m) => m.date === key && m.slot === 'soir').map((m) => (
+                  <span key={m.id} className="tag" style={{ background: '#b8861f' }} title={`Dîner : ${m.title}`}>🍽️<b>{m.title}</b></span>
                 ))}
                 {bins.filter((b) => binOccursOn(b, d)).map((b) => (
                   <span key={b.id} className="tag" style={{ background: b.color }} title={b.name}>🗑️<b>{b.name}</b></span>

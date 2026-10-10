@@ -79,6 +79,17 @@ art.cadeaux = (
   </>
 )
 
+art.repas = (
+  <>
+    <rect x="150" y="16" width="8" height="80" rx="3" fill={G} />
+    <rect x="22" y="22" width="6" height="36" rx="2" fill={G2} /><rect x="34" y="22" width="6" height="36" rx="2" fill={G2} /><rect x="46" y="22" width="6" height="36" rx="2" fill={G2} />
+    <circle cx="100" cy="92" r="58" fill={G} />
+    <circle cx="100" cy="92" r="46" fill={W} />
+    <circle cx="82" cy="80" r="16" fill={T} /><circle cx="116" cy="76" r="12" fill="#6b9a52" /><circle cx="108" cy="108" r="14" fill={Y} />
+    <circle cx="80" cy="108" r="7" fill="#6b9a52" />
+  </>
+)
+
 export default function Art({ id }: { id: string }) {
   return (
     <svg className="art" viewBox="0 0 200 144" aria-hidden>

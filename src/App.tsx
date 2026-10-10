@@ -10,6 +10,7 @@ import Cadeaux from './modules/Cadeaux'
 import Courses from './modules/Courses'
 import Fidelite from './modules/Fidelite'
 import Poubelles from './modules/Poubelles'
+import Repas from './modules/Repas'
 import Taches from './modules/Taches'
 import Travail from './modules/Travail'
 import { getModule } from './modules/registry'
@@ -59,6 +60,7 @@ export default function App() {
         {active?.id === 'taches' && <Taches household={household} />}
         {active?.id === 'anniversaires' && <Anniversaires />}
         {active?.id === 'cadeaux' && <Cadeaux household={household} />}
+        {active?.id === 'repas' && <Repas household={household} />}
         {active?.id === 'fidelite' && <Fidelite household={household} />}
       </main>
       {(household.needsProfile || profileOpen) && (

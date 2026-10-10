@@ -79,3 +79,18 @@ export interface Gift {
   note: string
   by: string // member id
 }
+
+export interface Recipe {
+  id: string
+  title: string
+  ingredients: string[]
+}
+
+export interface Meal {
+  id: string
+  date: string // YYYY-MM-DD
+  slot: 'midi' | 'soir'
+  title: string
+  ingredients: string[]
+  inCourses: boolean // ingrédients déjà envoyés aux courses
+}
