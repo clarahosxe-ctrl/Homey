@@ -160,7 +160,7 @@ export default function Fidelite({ household }: { household: Household }) {
         {list.map((c) => {
           const o = members.find((m) => m.id === c.owner)
           return (
-            <button key={c.id} className="loyalty" style={{ background: c.color }} onClick={() => open(c)}>
+            <button key={c.id} className="loyalty" style={{ background: c.color, ['--c' as string]: c.color }} onClick={() => open(c)}>
               <strong>{c.name}</strong>
               <span>{o ? o.name : 'Foyer'}{c.photo && ' · 📷'}</span>
             </button>
