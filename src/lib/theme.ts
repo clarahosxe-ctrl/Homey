@@ -42,14 +42,31 @@ export function getTheme(): string {
   }
 }
 
+/** Convertit n'importe quelle couleur CSS (color-mix, color(srgb…)) en rgb() simple, comprise partout. */
+function cssToRgb(css: string) {
+  try {
+    const c = document.createElement('canvas'); c.width = c.height = 1
+    const x = c.getContext('2d', { willReadFrequently: true })!
+    x.fillStyle = '#000'; x.fillStyle = css; x.fillRect(0, 0, 1, 1)
+    const [r, g, b] = x.getImageData(0, 0, 1, 1).data
+    return `rgb(${r}, ${g}, ${b})`
+  } catch { return css }
+}
+
+/** Thèmes sombres : la barre d'état de l'iPhone devient transparente (texte blanc) et le fond de l'app passe dessous. */
+const DARK_THEMES = ['sombre', 'nuit', 'amoled', 'color-dark', 'glass-dark']
+export const isDarkTheme = (id: string) =>
+  DARK_THEMES.includes(id) || (id === 'auto' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+
 export function applyTheme(id: string) {
   const root = document.documentElement
   if (id === 'auto') root.removeAttribute('data-theme')
   else root.setAttribute('data-theme', id)
+  document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]')?.setAttribute('content', isDarkTheme(id) ? 'black-translucent' : 'default')
   // barre du navigateur : couleur du fond (après application du thème)
   requestAnimationFrame(() => {
     const meta = document.querySelector('meta[name="theme-color"]')
-    if (meta) meta.setAttribute('content', getComputedStyle(document.body).backgroundColor)
+    if (meta) meta.setAttribute('content', cssToRgb(getComputedStyle(document.documentElement).backgroundColor))
   })
 }
 

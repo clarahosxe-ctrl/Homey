@@ -181,7 +181,7 @@
   border: 1px solid var(--line); box-shadow: var(--shadow);
 }
 :root[data-theme^='glass'] .sheet-apps { border: 1px solid var(--line); border-bottom: 0; box-shadow: var(--shadow); }
-:root[data-theme^='glass'] .topbar { background: color-mix(in srgb, var(--bg) 30%, transparent); -webkit-backdrop-filter: blur(18px) saturate(1.5); backdrop-filter: blur(18px) saturate(1.5); }
+:root[data-theme^='glass'] .topbar { background: linear-gradient(color-mix(in srgb, var(--bg) 62%, transparent) 55%, transparent); }
 :root[data-theme^='glass'] .stat { border-top-width: 3px; }
 :root[data-theme^='glass'] .round { border: 1px solid var(--line); }
 /* tuiles : vraies cartes de verre teintées, halo de la couleur de la rubrique, illustration en relief */
@@ -263,8 +263,9 @@
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
+html { background: var(--bg); }
 body {
-  background: var(--bg);
+  background: transparent; /* le fond est porté par <html> (voir plus haut) pour passer sous la barre d'état */
   color: var(--ink);
   font-family: var(--sans);
   font-size: 16px;
@@ -286,7 +287,9 @@ body::before {
 /* Top bar */
 .topbar {
   display: flex; align-items: center; gap: 12px;
-  padding: 18px 0 14px; position: sticky; top: 0; z-index: 5;
+  /* barre d'état de l'iPhone : le contenu peut passer dessous (thèmes sombres), on garde la zone sûre */
+  padding: calc(env(safe-area-inset-top, 0px) + 18px) 16px 14px; margin: 0 -16px;
+  position: sticky; top: 0; z-index: 5;
   background: linear-gradient(var(--bg) 70%, transparent);
 }
 
