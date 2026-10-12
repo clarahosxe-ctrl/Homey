@@ -13,7 +13,7 @@ export default function ThemePicker() {
             className={'theme' + (current === t.id ? ' on' : '')}
             onClick={() => setTheme(t.id)} title={t.hint}
           >
-            <span className="theme-prev" style={{ background: t.preview[0], borderColor: t.preview[3] + '33' }}>
+            <span className="theme-prev" style={{ background: t.bg ?? t.preview[0], borderColor: t.preview[3] + '33' }}>
               {t.id === 'auto'
                 ? <span className="theme-split" style={{ background: `linear-gradient(115deg, ${t.preview[0]} 50%, ${t.preview[1]} 50%)` }} />
                 : <span className="theme-card" style={{ background: t.preview[1], borderColor: t.preview[3] + '22' }}><i style={{ background: t.preview[3] }} /><i style={{ background: t.preview[3], width: '55%', opacity: 0.5 }} /></span>}

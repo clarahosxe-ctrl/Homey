@@ -8,9 +8,13 @@ export interface ThemeDef {
   preview: [string, string, string, string]
   /** pastilles de couleur supplémentaires dans l'aperçu */
   dots?: string[]
+  /** fond de l'aperçu (dégradé…) si différent d'une couleur unie */
+  bg?: string
 }
 
 export const THEMES: ThemeDef[] = [
+  { id: 'glass', label: 'Liquid Glass', hint: 'Verre dépoli translucide sur un fond de couleurs fluides', preview: ['#eaf0fb', 'rgba(255,255,255,0.7)', '#4f8cff', '#14213d'], dots: ['#4f8cff', '#ff7ab8', '#34d1a0'], bg: 'radial-gradient(circle at 15% 15%, #ffc4e1, transparent 60%), radial-gradient(circle at 90% 20%, #b3d2ff, transparent 60%), radial-gradient(circle at 20% 95%, #bff3dc, transparent 60%), #eaf0fb' },
+  { id: 'glass-dark', label: 'Liquid Glass sombre', hint: 'La version nocturne du verre liquide', preview: ['#0b0d1c', 'rgba(255,255,255,0.14)', '#7aa2ff', '#f1f4ff'], dots: ['#7aa2ff', '#ff6fb0', '#34d1a0'], bg: 'radial-gradient(circle at 15% 15%, rgba(120,70,255,0.6), transparent 60%), radial-gradient(circle at 90% 20%, rgba(0,150,255,0.5), transparent 60%), radial-gradient(circle at 20% 95%, rgba(255,60,150,0.4), transparent 60%), #0b0d1c' },
   { id: 'color', label: 'Coloré', hint: 'Clair et coloré : une couleur par rubrique, boutons bleu nuit', preview: ['#f5f5f9', '#ffffff', '#22b79a', '#1c1c2b'], dots: ['#22b79a', '#e0457b', '#f2a33a'] },
   { id: 'color-dark', label: 'Coloré sombre', hint: 'La version sombre du thème coloré', preview: ['#12121c', '#1d1d2c', '#22b79a', '#f1f1f8'], dots: ['#22b79a', '#e0457b', '#f2a33a'] },
   { id: 'auto', label: 'Automatique', hint: 'Suit le mode clair / sombre du téléphone', preview: ['#f1efe9', '#1d1a16', '#2f7d68', '#1f2a27'] },
@@ -22,7 +26,6 @@ export const THEMES: ThemeDef[] = [
   { id: 'foret', label: 'Forêt', hint: 'Verts naturels', preview: ['#edf1e8', '#fbfdf8', '#3c7a3c', '#1c2a1c'] },
   { id: 'rose', label: 'Rose poudré', hint: 'Doux et lumineux', preview: ['#fbf0f2', '#ffffff', '#c4486e', '#3a1f28'] },
   { id: 'sepia', label: 'Sépia', hint: 'Papier ancien', preview: ['#f3e9d7', '#fbf5e8', '#9a6b2f', '#3b2f20'] },
-  { id: 'nb', label: 'Noir & blanc', hint: 'Contraste maximal, sans aucune couleur', preview: ['#ffffff', '#efefef', '#000000', '#000000'] },
 ]
 
 const KEY = 'homey:theme'
@@ -33,7 +36,7 @@ export function getTheme(): string {
     const raw = localStorage.getItem(KEY)
     if (raw === null) return 'color' // thème par défaut
     const t = JSON.parse(raw)
-    return THEMES.some((x) => x.id === t) ? t : 'auto'
+    return THEMES.some((x) => x.id === t) ? t : 'color'
   } catch {
     return 'auto'
   }
