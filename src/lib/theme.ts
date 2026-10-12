@@ -6,9 +6,13 @@ export interface ThemeDef {
   hint: string
   /** aperçu : fond, carte, accent, texte */
   preview: [string, string, string, string]
+  /** pastilles de couleur supplémentaires dans l'aperçu */
+  dots?: string[]
 }
 
 export const THEMES: ThemeDef[] = [
+  { id: 'color', label: 'Coloré', hint: 'Clair et coloré : une couleur par rubrique, boutons bleu nuit', preview: ['#f5f5f9', '#ffffff', '#22b79a', '#1c1c2b'], dots: ['#22b79a', '#e0457b', '#f2a33a'] },
+  { id: 'color-dark', label: 'Coloré sombre', hint: 'La version sombre du thème coloré', preview: ['#12121c', '#1d1d2c', '#22b79a', '#f1f1f8'], dots: ['#22b79a', '#e0457b', '#f2a33a'] },
   { id: 'auto', label: 'Automatique', hint: 'Suit le mode clair / sombre du téléphone', preview: ['#f1efe9', '#1d1a16', '#2f7d68', '#1f2a27'] },
   { id: 'clair', label: 'Clair', hint: 'Crème et vert, le thème d’origine', preview: ['#f1efe9', '#ffffff', '#2f7d68', '#1f2a27'] },
   { id: 'sombre', label: 'Sombre', hint: 'Brun chaud, doux pour les yeux', preview: ['#1d1a16', '#27231e', '#2f7d68', '#f2eadf'] },
@@ -26,7 +30,9 @@ const EVT = 'homey-theme'
 
 export function getTheme(): string {
   try {
-    const t = JSON.parse(localStorage.getItem(KEY) ?? 'null')
+    const raw = localStorage.getItem(KEY)
+    if (raw === null) return 'color' // thème par défaut
+    const t = JSON.parse(raw)
     return THEMES.some((x) => x.id === t) ? t : 'auto'
   } catch {
     return 'auto'

@@ -17,7 +17,7 @@ export default function ThemePicker() {
               {t.id === 'auto'
                 ? <span className="theme-split" style={{ background: `linear-gradient(115deg, ${t.preview[0]} 50%, ${t.preview[1]} 50%)` }} />
                 : <span className="theme-card" style={{ background: t.preview[1], borderColor: t.preview[3] + '22' }}><i style={{ background: t.preview[3] }} /><i style={{ background: t.preview[3], width: '55%', opacity: 0.5 }} /></span>}
-              <span className="theme-dot" style={{ background: t.preview[2] }} />
+              {(t.dots ?? [t.preview[2]]).map((c, i) => <span key={i} className="theme-dot" style={{ background: c, right: 8 + i * 14 }} />)}
             </span>
             <span className="theme-name">{t.label}</span>
           </button>

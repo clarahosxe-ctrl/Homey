@@ -28,6 +28,12 @@ export default function App() {
   const [, bump] = useState(0)
   const mod = getModule(route)
   const active = mod?.ready ? mod : null
+  // couleur de la rubrique active (utilisée par les thèmes colorés)
+  useEffect(() => {
+    const root = document.documentElement
+    if (active) root.style.setProperty('--module-hue', active.hue)
+    else root.style.removeProperty('--module-hue')
+  }, [active])
   const hhRaw = useSyncExternalStore(onHouseholdChange, householdSnapshot)
   const hhName = (hhRaw ? (JSON.parse(hhRaw) as { name: string }).name : '') || 'Mon foyer'
   // Un compte est toujours rattaché à un foyer : sans foyer, on ne voit que l'écran d'accueil.

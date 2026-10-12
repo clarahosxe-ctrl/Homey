@@ -31,6 +31,6 @@ et efface de l'appareil les données partagées de ce foyer (le profil et le th�
 
 ## Thèmes
 
-Choix dans « Mon profil » (avatar en haut à droite) : Automatique, Clair, Sombre, Nuit, Noir pur, Océan, Forêt, Rose poudré,
+Choix dans « Mon profil » (avatar en haut à droite) : Coloré (par défaut), Coloré sombre, Automatique, Clair, Sombre, Nuit, Noir pur, Océan, Forêt, Rose poudré,
 Sépia, Noir & blanc. Chaque thème est un jeu de variables CSS (`:root[data-theme='…']` dans `src/styles.css`,
 liste dans `src/lib/theme.ts`). Le choix est propre à chaque appareil.
