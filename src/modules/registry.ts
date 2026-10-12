@@ -33,7 +33,6 @@ export const MODULES: ModuleInfo[] = [
   { id: 'envies', title: 'Envies', icon: '✨', hue: '#c85a96', tint: ['#f6cde0', '#ecaccb'], blurb: 'Sorties, restos, films à voir', ready: true },
   { id: 'repas', title: 'Repas', icon: '🍽️', hue: '#b8861f', tint: ['#f3e6bd', '#e6d296'], blurb: 'Menu de la semaine, recettes → courses', ready: true },
   // idées proposées
-  { id: 'souvenirs', title: 'Souvenirs', icon: '📸', hue: '#7a6fb0', blurb: 'Journal du foyer, photos du mois', ready: false },
   { id: 'wishlist', title: 'Envies', icon: '✨', hue: '#d06a9a', blurb: 'Sorties, restos, films à voir', ready: false },
 ]
 

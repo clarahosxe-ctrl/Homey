@@ -76,7 +76,7 @@ export default function Vehicules({ household }: { household: Household }) {
       {adding ? (
         <form className="panel stack" onSubmit={create}>
           <h3 className="panel-title">Nouveau véhicule</h3>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nom (ex. La Clio de Clara)" autoFocus />
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Nom (ex. Ma citadine)" autoFocus />
           <div className="chips">
             {VTYPES.map((t) => <button type="button" key={t.id} className={'chip' + (type === t.id ? ' on' : '')} onClick={() => setType(t.id)}>{t.icon} {t.label}</button>)}
           </div>

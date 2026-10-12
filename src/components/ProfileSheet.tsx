@@ -4,7 +4,7 @@ import Avatar from './Avatar'
 import { PhotoThumb } from './Photo'
 import ThemePicker from './ThemePicker'
 
-export default function ProfileSheet({ household, welcome, onClose, onJoin }: { household: Household; welcome: boolean; onClose: () => void; onJoin?: () => void }) {
+export default function ProfileSheet({ household, welcome, onClose, onJoin, onTour }: { household: Household; welcome: boolean; onClose: () => void; onJoin?: () => void; onTour?: () => void }) {
   const { current, legacy, members, saveProfile, claim, removeMember } = household
   const start = welcome ? legacy : current
   const [name, setName] = useState(start?.name ?? '')
@@ -58,6 +58,7 @@ export default function ProfileSheet({ household, welcome, onClose, onJoin }: { 
         </div>
 
         {!welcome && <ThemePicker />}
+        {!welcome && onTour && <button type="button" className="btn" onClick={onTour}>📖 Revoir la visite guidée</button>}
 
         <button className="btn primary" disabled={!name.trim()}>{welcome ? 'C’est parti' : 'Enregistrer'}</button>
 

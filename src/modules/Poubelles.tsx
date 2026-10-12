@@ -6,12 +6,7 @@ import type { Bin } from '../lib/types'
 
 const COLORS = ['#e0b73a', '#4f7cac', '#5c8a6f', '#8a6d4f', '#6a7480', '#9a6fb0']
 
-const DEFAULT_BINS: Bin[] = [
-  { id: 'b1', name: 'Ordures ménagères', color: '#6a7480', days: [2], everyWeeks: 1, anchor: iso(new Date()) },
-  { id: 'b2', name: 'Tri sélectif', color: '#e0b73a', days: [5], everyWeeks: 2, anchor: iso(new Date()) },
-]
-
-export const useBins = () => useStored<Bin[]>('bins', DEFAULT_BINS)
+export const useBins = () => useStored<Bin[]>('bins', [])
 
 const blank = (): Bin => ({ id: '', name: '', color: COLORS[0], days: [1], everyWeeks: 1, anchor: iso(new Date()) })
 
@@ -30,6 +25,7 @@ export default function Poubelles() {
 
   return (
     <div className="stack">
+      {bins.length === 0 && !draft && <p className="empty">Aucune poubelle. Ajoutez vos ramassages (ordures, tri, verre…) 🗑️</p>}
       <ul className="stack">
         {bins.map((b) => {
           const next = nextPickup(b)
