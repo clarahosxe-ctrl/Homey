@@ -39,11 +39,11 @@ export function dueItems(subjects: TrackerSubject[], records: TrackerRecord[], h
 
 /** Échéances de toutes les mini-applis "suivi", par clé. (TRACKERS est constant : l'ordre des hooks ne change pas.) */
 export function useDues(horizonDays = 30) {
-  const out: Record<string, (Due & { icon: string })[]> = {}
+  const out: Record<string, (Due & { icon: string; label: string })[]> = {}
   for (const c of TRACKERS) {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { subjects, records } = useTracker(c.key)
-    out[c.key] = dueItems(subjects, records, horizonDays).map((d) => ({ ...d, icon: c.kinds.find((k) => k.id === d.kind.split(':')[0])?.icon ?? c.emojis[0] }))
+    out[c.key] = dueItems(subjects, records, horizonDays).map((d) => ({ ...d, icon: c.kinds.find((k) => k.id === d.kind.split(':')[0])?.icon ?? c.emojis[0], label: c.kinds.find((k) => k.id === d.kind.split(':')[0])?.label ?? d.kind }))
   }
   return out
 }

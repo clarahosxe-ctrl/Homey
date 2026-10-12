@@ -1,17 +1,22 @@
 import { useState } from 'react'
 import type { Household } from '../lib/household'
-import { DAY_SHORT, addDays, daysBetween, iso, isSameDay, weekDays } from '../lib/dates'
+import { DAY_SHORT, addDays, fmtLong, iso, weekDays } from '../lib/dates'
+import { useCalendarSources } from '../lib/prefs'
 import { binOccursOn } from '../lib/recurrence'
-import { useBins } from '../modules/Poubelles'
-import { birthdayOn, useBirthdays } from '../modules/Anniversaires'
-import { useMeals } from '../modules/Repas'
-import { useDues } from './Tracker'
 import { renewsOn, useSubs } from '../modules/Abonnements'
+import { birthdayOn, useBirthdays } from '../modules/Anniversaires'
+import { useBins } from '../modules/Poubelles'
 import { useAppts } from '../modules/Rdv'
-import { dueDate, turnOf, useChores } from '../modules/Taches'
-import { useTrips } from '../modules/Voyages'
+import { useMeals } from '../modules/Repas'
 import { WORK_KINDS, useHolidays, useWork } from '../modules/Travail'
+import { useTrips } from '../modules/Voyages'
+import { CalendarSettings } from './PrefsSheets'
+import { useDues } from './Tracker'
 
+interface Ev { key: string; icon: string; label: string; detail?: string; color: string; href: string }
+const MAX_ICONS = 3
+
+/** Calendrier sobre : la semaine en icônes, le détail du jour touché juste en dessous. */
 export default function WeekCalendar({ household }: { household: Household }) {
   const [bins] = useBins()
   const [work] = useWork()
@@ -22,105 +27,76 @@ export default function WeekCalendar({ household }: { household: Household }) {
   const [subs] = useSubs()
   const [holidays] = useHolidays()
   const [appts] = useAppts()
-  const [chores] = useChores()
+  const src = useCalendarSources()
   const [offset, setOffset] = useState(0)
-  const days = weekDays(addDays(new Date(), offset * 7))
-  const today = new Date()
-  const todayKey = iso(today)
-  const MAX_CHORES = 3
+  const [selected, setSelected] = useState(iso(new Date()))
+  const [settings, setSettings] = useState(false)
 
-  /** Tâches ménagères d'un jour : faites ce jour-là (✓), à faire (échéance ou récurrence), ou en retard (affichées aujourd'hui).
-   *  Les tâches quotidiennes (tous les jours) restent hors du calendrier pour ne pas l'encombrer. */
-  const choresOn = (d: Date, key: string) => {
-    const out: { c: (typeof chores)[number]; kind: 'done' | 'due' | 'late' }[] = []
-    for (const c of chores) {
-      if (c.everyDays <= 1) continue
-      if (c.history.some((h) => h.date === key)) out.push({ c, kind: 'done' })
-      if (key < todayKey) continue
-      const first = dueDate(c), firstKey = iso(first)
-      if (key === firstKey) out.push({ c, kind: 'due' })
-      else if (key === todayKey && firstKey < todayKey) out.push({ c, kind: 'late' })
-      else if (key > firstKey && daysBetween(first, d) % c.everyDays === 0) out.push({ c, kind: 'due' })
+  const days = weekDays(addDays(new Date(), offset * 7))
+  const todayKey = iso(new Date())
+  const title = days[3].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+  const sel = days.find((d) => iso(d) === selected) ?? days.find((d) => iso(d) === todayKey) ?? days[0]
+  const selKey = iso(sel)
+
+  const eventsOn = (d: Date, key: string): Ev[] => {
+    const out: Ev[] = []
+    if (src.on('poubelles')) for (const b of bins) if (binOccursOn(b, d)) out.push({ key: 'b' + b.id, icon: '🗑️', label: b.name, detail: 'Ramassage', color: b.color, href: '#/poubelles' })
+    if (src.on('anniversaires')) for (const b of birthdays) if (birthdayOn(b, d)) out.push({ key: 'a' + b.id, icon: '🎂', label: `Anniversaire de ${b.name}`, detail: b.year ? `${d.getFullYear() - b.year} ans` : undefined, color: '#c4607e', href: '#/anniversaires' })
+    if (src.on('voyages')) for (const t of trips) if (t.from <= key && key <= t.to) out.push({ key: 't' + t.id, icon: '✈️', label: t.name, detail: key === t.from ? 'Départ' : key === t.to ? 'Retour' : 'En voyage', color: '#2f8fb0', href: '#/voyages' })
+    if (src.on('travail')) for (const w of work) if (w.from <= key && key <= w.to) {
+      const m = household.members.find((x) => x.id === w.member)
+      out.push({ key: 'w' + w.id, icon: WORK_KINDS[w.kind].icon, label: `${m?.name ?? ''} · ${WORK_KINDS[w.kind].label}`, detail: w.half ? 'Demi-journée' : undefined, color: m?.color ?? '#4f7cac', href: '#/travail' })
     }
+    if (src.on('feries')) for (const h of holidays) if (h.date === key) out.push({ key: 'h' + h.date, icon: '🎌', label: h.name, detail: 'Jour férié', color: '#8a8f99', href: '#/travail' })
+    if (src.on('rdv')) for (const a of appts) if (a.booked === key && a.owner === household.current.id) out.push({ key: 'r' + a.id, icon: a.icon, label: a.name, detail: a.bookedTime ? `à ${a.bookedTime}` : 'Rendez-vous', color: '#c0788a', href: '#/rdv' })
+    if (src.on('echeances')) for (const x of dues) if (x.next === key) out.push({ key: 'd' + x.subject.id + x.kind, icon: x.icon, label: `${x.subject.name} · ${x.label}`, detail: 'Échéance', color: '#5f9a58', href: '#/' })
+    if (src.on('repas')) for (const m of meals) if (m.date === key && m.slot === 'soir') out.push({ key: 'm' + m.id, icon: '🍽️', label: m.title, detail: 'Dîner', color: '#b8861f', href: '#/repas' })
+    if (src.on('abonnements')) for (const s of subs) if (renewsOn(s, d)) out.push({ key: 's' + s.id, icon: '🔁', label: s.name, detail: 'Renouvellement', color: '#6f68b8', href: '#/abonnements' })
     return out
   }
-  const title = days[3].toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+
+  const selEvents = eventsOn(sel, selKey)
 
   return (
-    <section className="card-flat">
+    <section className="card-flat stack">
       <div className="row between">
         <h3 className="cal-title">{title}</h3>
         <div className="row">
-          {offset !== 0 && <button className="link" onClick={() => setOffset(0)}>Aujourd’hui</button>}
+          {offset !== 0 && <button className="link" onClick={() => { setOffset(0); setSelected(todayKey) }}>Aujourd’hui</button>}
+          <button className="round" onClick={() => setSettings(true)} aria-label="Choisir ce que le calendrier affiche" title="Contenu du calendrier">⚙</button>
           <button className="round" onClick={() => setOffset(offset - 1)} aria-label="Semaine précédente">‹</button>
           <button className="round" onClick={() => setOffset(offset + 1)} aria-label="Semaine suivante">›</button>
         </div>
       </div>
-      <div className="week">
+
+      <div className="strip" role="tablist" aria-label="Jours de la semaine">
         {days.map((d) => {
           const key = iso(d)
-          const isToday = isSameDay(d, today)
+          const evs = eventsOn(d, key)
           return (
-            <div key={key} className={'day' + (isToday ? ' today' : '')}>
-              <div className="day-head">{DAY_SHORT[d.getDay()]} {d.getDate()}</div>
-              <div className="day-body">
-                {appts.filter((a) => a.booked === key).map((a) => (
-                  <span key={a.id} className="tag" style={{ background: '#c0788a' }} title={`${a.name}${a.bookedTime ? ` à ${a.bookedTime}` : ''}`}>{a.icon}<b>{a.name}</b></span>
-                ))}
-                {holidays.filter((h) => h.date === key).map((h) => (
-                  <span key={h.date} className="tag soft" style={{ borderColor: 'var(--ink-2)', color: 'var(--ink-2)' }} title={h.name}>🎌<b>{h.name}</b></span>
-                ))}
-                {birthdays.filter((b) => birthdayOn(b, d)).map((b) => (
-                  <span key={b.id} className="tag" style={{ background: '#c4607e' }} title={`Anniversaire de ${b.name}`}>🎂<b>{b.name}</b></span>
-                ))}
-                {trips.filter((t) => t.from <= key && key <= t.to).map((t) => (
-                  <span key={t.id} className="tag" style={{ background: '#2f8fb0' }} title={t.name}>✈️<b>{t.name}</b></span>
-                ))}
-                {dues.filter((x) => x.next === key).map((x) => (
-                  <span key={x.subject.id + x.kind} className="tag" style={{ background: '#5f9a58' }} title={`${x.subject.name} : ${x.kind}`}>{x.icon}<b>{x.subject.name}</b></span>
-                ))}
-                {subs.filter((x) => renewsOn(x, d)).map((x) => (
-                  <span key={x.id} className="tag" style={{ background: '#6f68b8' }} title={`Renouvellement : ${x.name}`}>🔁<b>{x.name}</b></span>
-                ))}
-                {meals.filter((m) => m.date === key && m.slot === 'soir').map((m) => (
-                  <span key={m.id} className="tag" style={{ background: '#b8861f' }} title={`Dîner : ${m.title}`}>🍽️<b>{m.title}</b></span>
-                ))}
-                {bins.filter((b) => binOccursOn(b, d)).map((b) => (
-                  <span key={b.id} className="tag" style={{ background: b.color }} title={b.name}>🗑️<b>{b.name}</b></span>
-                ))}
-                {(() => {
-                  const list = choresOn(d, key)
-                  return (
-                    <>
-                      {list.slice(0, MAX_CHORES).map(({ c, kind }) => {
-                        const who = turnOf(c, household.members)
-                        const mine = who?.id === household.current.id
-                        const color = who?.color ?? 'var(--ink-2)'
-                        const label = `${c.name}${who ? ` · ${who.name}` : ''}${kind === 'late' ? ' (en retard)' : kind === 'done' ? ' (fait)' : ''}`
-                        return (
-                          <a key={c.id + kind} href="#/taches" className={'tag' + (mine && kind !== 'done' ? '' : ' soft')} title={label}
-                            style={mine && kind !== 'done' ? { background: color } : { borderColor: kind === 'late' ? '#c0392b' : color, color: kind === 'late' ? '#c0392b' : color, opacity: kind === 'done' ? 0.65 : 1 }}>
-                            {kind === 'done' ? '✓' : kind === 'late' ? '⚠️' : c.icon}<b>{c.name}</b>
-                          </a>
-                        )
-                      })}
-                      {list.length > MAX_CHORES && <a href="#/taches" className="tag soft more" title={list.slice(MAX_CHORES).map((x) => x.c.name).join(', ')}>+{list.length - MAX_CHORES} 🧹</a>}
-                    </>
-                  )
-                })()}
-                {work.filter((w) => w.from <= key && key <= w.to).map((w) => {
-                  const m = household.members.find((x) => x.id === w.member)
-                  return (
-                    <span key={w.id} className="tag soft" style={{ borderColor: m?.color, color: m?.color }} title={`${m?.name} · ${WORK_KINDS[w.kind].label}`}>
-                      {WORK_KINDS[w.kind].icon}<b>{m?.name}</b>
-                    </span>
-                  )
-                })}
-              </div>
-            </div>
+            <button key={key} role="tab" aria-selected={key === selKey} className={'sday' + (key === selKey ? ' sel' : '') + (key === todayKey ? ' today' : '')} onClick={() => setSelected(key)}>
+              <span className="sday-name">{DAY_SHORT[d.getDay()]}</span>
+              <span className="sday-num">{d.getDate()}</span>
+              <span className="sday-ev">
+                {evs.slice(0, MAX_ICONS).map((e) => <i key={e.key}>{e.icon}</i>)}
+                {evs.length > MAX_ICONS && <i className="more">+{evs.length - MAX_ICONS}</i>}
+              </span>
+            </button>
           )
         })}
       </div>
+
+      <div className="agenda">
+        <div className="agenda-title" style={{ textTransform: 'capitalize' }}>{fmtLong(sel)}</div>
+        {selEvents.length === 0 && <p className="sub" style={{ margin: 0 }}>Rien de prévu ce jour-là.</p>}
+        {selEvents.map((e) => (
+          <a key={e.key} className="ev" href={e.href} style={{ ['--ev' as string]: e.color }}>
+            <span className="ev-icon">{e.icon}</span>
+            <span className="grow"><strong>{e.label}</strong>{e.detail && <span className="sub"> · {e.detail}</span>}</span>
+          </a>
+        ))}
+      </div>
+      {settings && <CalendarSettings onClose={() => setSettings(false)} />}
     </section>
   )
 }

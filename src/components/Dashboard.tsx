@@ -19,6 +19,9 @@ import { useWishes } from '../modules/Envies'
 import { needsBooking, useAppts } from '../modules/Rdv'
 import { useCards } from '../modules/Fidelite'
 import Art from './Art'
+import { useState } from 'react'
+import { HomeSettings } from './PrefsSheets'
+import { useHomePrefs } from '../lib/prefs'
 import Weather from './Weather'
 import WeekCalendar from './WeekCalendar'
 
@@ -74,7 +77,9 @@ export default function Dashboard({ household, hhName }: { household: Household;
     cadeaux: gifts.filter((g) => g.status === 'achete' && g.forId !== household.current.id).length || undefined,
   }
 
-  const ready = MODULES.filter((m) => m.ready)
+  const prefs = useHomePrefs()
+  const [customizing, setCustomizing] = useState(false)
+  const ready = prefs.sort(MODULES.filter((m) => m.ready)).filter((m) => prefs.appVisible(m.id))
   const soon = MODULES.filter((m) => !m.ready)
 
   return (
@@ -84,11 +89,15 @@ export default function Dashboard({ household, hhName }: { household: Household;
         <p className="sub lead">{hhName} · {household.members.length} membre{household.members.length > 1 ? 's' : ''}</p>
       </header>
 
-      <WeekCalendar household={household} />
-      <Weather />
+      {prefs.sectionVisible('calendar') && <WeekCalendar household={household} />}
+      {prefs.sectionVisible('weather') && <Weather />}
 
       <section className="sheet-apps">
-        <h3 className="section-title">Mes applis</h3>
+        <div className="row between" style={{ alignItems: 'center', marginBottom: 14 }}>
+          <h3 className="section-title" style={{ margin: 0 }}>Mes applis</h3>
+          <button className="btn small" onClick={() => setCustomizing(true)}>⚙️ Personnaliser</button>
+        </div>
+        {ready.length === 0 && <p className="empty">Aucune application affichée. Touchez « Personnaliser » pour choisir celles dont vous avez besoin.</p>}
         <div className="grid">
           {ready.map((m) => (
             <a key={m.id} href={`#/${m.id}`} className="tile" style={{ ['--from' as string]: m.tint![0], ['--to' as string]: m.tint![1] }}>
@@ -99,13 +108,18 @@ export default function Dashboard({ household, hhName }: { household: Household;
           ))}
         </div>
 
-        <h3 className="section-title soon-title">Bientôt</h3>
-        <div className="chips">
-          {soon.map((m) => (
-            <span key={m.id} className="chip ghosty" title={m.blurb}>{m.icon} {m.title}</span>
-          ))}
-        </div>
+        {soon.length > 0 && (
+          <>
+            <h3 className="section-title soon-title">Bientôt</h3>
+            <div className="chips">
+              {soon.map((m) => (
+                <span key={m.id} className="chip ghosty" title={m.blurb}>{m.icon} {m.title}</span>
+              ))}
+            </div>
+          </>
+        )}
       </section>
+      {customizing && <HomeSettings onClose={() => setCustomizing(false)} />}
     </div>
   )
 }

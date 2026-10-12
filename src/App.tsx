@@ -50,7 +50,6 @@ export default function App() {
           <a href="#/" className="round big" aria-label="Accueil">🏡</a>
         )}
         <button className="hh-chip" onClick={() => setSheet(true)}>
-          <span className="hh-dot" />
           <span className="hh-name">{active ? active.title : hhName}</span>
         </button>
         <button className="me" onClick={() => setProfileOpen(true)} aria-label="Mon profil">

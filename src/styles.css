@@ -384,8 +384,7 @@ input:focus, select:focus, button:focus-visible { outline: 3px solid color-mix(i
 .topbar { gap: 10px; }
 .round { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; font-size: 1.1rem; display: inline-grid; place-items: center; text-decoration: none; padding: 0; }
 .round.big { width: 46px; height: 46px; font-size: 1.3rem; box-shadow: var(--shadow); border: 0; flex: none; }
-.hh-chip { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 16px 0 8px; border: 0; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); cursor: pointer; font: 600 1.05rem var(--sans); color: var(--ink); text-align: left; }
-.hh-dot { width: 30px; height: 30px; border-radius: 50%; flex: none; background: conic-gradient(var(--green), #c4593a, #e0b73a, var(--green)); }
+.hh-chip { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; height: 46px; padding: 0 18px; border: 0; border-radius: 999px; background: var(--surface); box-shadow: var(--shadow); cursor: pointer; font: 600 1.05rem var(--sans); color: var(--ink); text-align: left; }
 .hh-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .avatars { flex: none; }
 
@@ -594,3 +593,33 @@ a.tag { text-decoration: none; display: block; }
 /* thèmes colorés : la pastille du foyer reprend la couleur de la rubrique */
 :root[data-theme^='color'] .hh-chip { background: color-mix(in srgb, var(--accent) 14%, var(--surface)); }
 :root[data-theme^='color'] .hh-name { color: color-mix(in srgb, var(--accent) 45%, var(--ink)); }
+
+/* Calendrier sobre : semaine en icônes + détail du jour */
+.strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.sday { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 2px 6px; border: 1.5px solid transparent; border-radius: 16px; background: transparent; cursor: pointer; font: inherit; color: var(--ink); min-height: 92px; }
+.sday:hover { background: var(--surface-2); }
+.sday-name { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); font-weight: 700; }
+.sday-num { font: 800 1.15rem var(--sans); width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; }
+.sday.today .sday-num { background: var(--accent); color: var(--on-accent); }
+.sday.sel { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent); }
+.sday-ev { display: flex; flex-direction: column; align-items: center; gap: 1px; margin-top: 2px; }
+.sday-ev i { font-style: normal; font-size: 1rem; line-height: 1.2; }
+.sday-ev i.more { font-size: 0.68rem; color: var(--ink-2); font-weight: 700; }
+.agenda { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.agenda-title { font-weight: 700; color: var(--ink-2); font-size: 0.9rem; }
+.ev { display: flex; align-items: center; gap: 12px; padding: 9px 12px; border-radius: 14px; text-decoration: none; color: var(--ink); background: color-mix(in srgb, var(--ev, var(--accent)) 12%, var(--surface)); border-left: 4px solid var(--ev, var(--accent)); }
+.ev-icon { font-size: 1.3rem; }
+
+/* Interrupteurs et personnalisation */
+.switch { display: flex; align-items: center; gap: 12px; width: 100%; cursor: pointer; padding: 6px 0; }
+.switch input { position: absolute; opacity: 0; pointer-events: none; }
+.switch .track { flex: none; width: 46px; height: 28px; border-radius: 999px; background: var(--surface-2); border: 1.5px solid var(--line); position: relative; transition: background 0.18s; }
+.switch .track::after { content: ''; position: absolute; top: 2px; left: 2px; width: 21px; height: 21px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); transition: transform 0.18s; }
+.switch input:checked + .track { background: var(--accent); border-color: transparent; }
+.switch input:checked + .track::after { transform: translateX(18px); }
+.switch input:focus-visible + .track { outline: 3px solid color-mix(in srgb, var(--accent) 40%, transparent); outline-offset: 2px; }
+.switch-label { font-weight: 600; }
+.approw { display: flex; align-items: center; gap: 4px; border-top: 1px solid var(--line); }
+.approw:first-child { border-top: 0; }
+.approw .icon-btn { font-size: 0.8rem; }
+.approw .icon-btn:disabled { opacity: 0.25; cursor: default; }
