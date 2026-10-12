@@ -18,7 +18,7 @@ export default function Welcome() {
   return (
     <div className="welcome">
       <div className="welcome-card stack">
-        <div className="welcome-logo" aria-hidden>🏡</div>
+        <img className="welcome-logo" src="/icon-512.png" alt="" width="104" height="104" />
         <h1 className="welcome-title">Bienvenue sur Homey</h1>
         <p className="sub center">Tout ce qui se passe dans votre foyer, au même endroit. Pour commencer, créez votre foyer ou rejoignez celui de vos proches.</p>
 

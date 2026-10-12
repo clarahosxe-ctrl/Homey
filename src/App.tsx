@@ -58,7 +58,7 @@ export default function App() {
         {active ? (
           <a href="#/" className="round big" aria-label="Retour à l’accueil">←</a>
         ) : (
-          <a href="#/" className="round big" aria-label="Accueil">🏡</a>
+          <a href="#/" className="logo-btn" aria-label="Accueil"><img src="/icon-192.png" alt="" width="46" height="46" /></a>
         )}
         <button className="hh-chip" onClick={() => setSheet(true)}>
           <span className="hh-name">{active ? active.title : hhName}</span>

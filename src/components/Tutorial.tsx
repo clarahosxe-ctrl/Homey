@@ -27,7 +27,7 @@ export default function Tutorial({ title, intro, slides, last = 'Compris !', onC
           <button className="link" onClick={onClose}>Passer</button>
         </div>
         <div className="tuto-body">
-          <div className="tuto-icon" aria-hidden>{s.icon}</div>
+          {s.icon === 'logo' ? <img className="tuto-logo" src="/icon-512.png" alt="" width="96" height="96" /> : <div className="tuto-icon" aria-hidden>{s.icon}</div>}
           <h2 className="tuto-title">{s.title}</h2>
           <p className="tuto-text">{s.text}</p>
           {i === 0 && intro && slides.length > 1 && <p className="sub center">{intro}</p>}

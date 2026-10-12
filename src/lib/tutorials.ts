@@ -2,7 +2,7 @@ export interface Slide { icon: string; title: string; text: string }
 
 /** Visite guidée de l'application (première ouverture, puis depuis « Mon profil »). */
 export const APP_TOUR: Slide[] = [
-  { icon: '🏡', title: 'Bienvenue sur Homey', text: 'Le hub de votre foyer : courses, poubelles, rendez-vous, budget, animaux, voyages… tout au même endroit, partagé avec les personnes de votre foyer.' },
+  { icon: 'logo', title: 'Bienvenue sur Homey', text: 'Le hub de votre foyer : courses, poubelles, rendez-vous, budget, animaux, voyages… tout au même endroit, partagé avec les personnes de votre foyer.' },
   { icon: '📅', title: 'Votre accueil', text: 'La semaine en un coup d’œil : touchez un jour pour voir son détail. Le ⚙ du calendrier choisit ce qu’il affiche. La météo se règle avec le 📍.' },
   { icon: '🧩', title: 'Vos applications', text: 'Chaque tuile est une mini-appli. La pastille indique ce qui demande votre attention. « Personnaliser » masque celles dont vous n’avez pas besoin et change leur ordre.' },
   { icon: '👥', title: 'Votre foyer', text: 'Tout est synchronisé entre les membres. Le nom en haut ouvre « Mon foyer » : vous y trouvez le code à partager pour inviter quelqu’un.' },
