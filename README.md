@@ -1,4 +1,4 @@
-# Homey 🏡
+# Homee 🏡
 
 Le hub de votre foyer : un dashboard (semaine, météo) et des mini-applis (courses, poubelles, travail, tâches ménagères, cartes de fidélité…).
 

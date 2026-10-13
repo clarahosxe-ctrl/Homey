@@ -1,4 +1,4 @@
--- Homey : à exécuter une fois dans Supabase (SQL Editor).
+-- Homee : à exécuter une fois dans Supabase (SQL Editor).
 -- Pas de comptes : un foyer = un code secret. Les tables ne sont pas lisibles
 -- directement (RLS sans policy) ; tout passe par les fonctions ci-dessous.
 
