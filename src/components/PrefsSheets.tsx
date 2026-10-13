@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import Portal from './Portal'
 import { CALENDAR_SOURCES, HOME_SECTIONS, useCalendarSources, useHomePrefs } from '../lib/prefs'
 import { MODULES } from '../modules/registry'
 
@@ -19,12 +20,14 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
     return () => window.removeEventListener('keydown', esc)
   }, [onClose])
   return (
-    <div className="overlay" onClick={onClose} role="dialog" aria-label={title}>
-      <div className="sheet stack" onClick={(e) => e.stopPropagation()}>
-        <div className="row between"><h2 className="sheet-title">{title}</h2><button className="icon-btn" onClick={onClose} aria-label="Fermer">×</button></div>
-        {children}
+    <Portal>
+      <div className="overlay" onClick={onClose} role="dialog" aria-label={title}>
+        <div className="sheet stack" onClick={(e) => e.stopPropagation()}>
+          <div className="row between"><h2 className="sheet-title">{title}</h2><button className="icon-btn" onClick={onClose} aria-label="Fermer">×</button></div>
+          {children}
+        </div>
       </div>
-    </div>
+    </Portal>
   )
 }
 

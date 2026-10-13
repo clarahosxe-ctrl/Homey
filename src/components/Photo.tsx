@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { addPhoto, loadPhoto, removePhoto } from '../lib/photos'
+import Portal from './Portal'
 
 /** Source d'une photo (aperçu ou grande taille) ; null tant qu'elle n'est pas disponible. */
 export function usePhoto(id?: string, full = false) {
@@ -78,6 +79,7 @@ export function Album({ ids, onChange, title = '📸 Photos' }: { ids: string[];
         {ids.map((id) => <AlbumCell key={id} id={id} onOpen={() => setOpen(id)} />)}
       </div>
       {open && (
+        <Portal>
         <div className="overlay lightbox" onClick={() => setOpen(null)} role="dialog" aria-label="Photo">
           {big ? <img src={big} alt="" /> : <p style={{ color: '#fff' }}>Chargement…</p>}
           <div className="row" onClick={(e) => e.stopPropagation()}>
@@ -85,6 +87,7 @@ export function Album({ ids, onChange, title = '📸 Photos' }: { ids: string[];
             <button className="btn primary small" onClick={() => setOpen(null)}>Fermer</button>
           </div>
         </div>
+        </Portal>
       )}
     </section>
   )

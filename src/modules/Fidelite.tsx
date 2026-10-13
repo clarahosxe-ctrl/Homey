@@ -2,6 +2,7 @@ import JsBarcode from 'jsbarcode'
 import QRCode from 'qrcode'
 import { useEffect, useRef, useState } from 'react'
 import { PhotoThumb, usePhoto } from '../components/Photo'
+import Portal from '../components/Portal'
 import type { Household } from '../lib/household'
 import { removePhoto } from '../lib/photos'
 import { uid, useStored } from '../lib/storage'
@@ -171,6 +172,7 @@ export default function Fidelite({ household }: { household: Household }) {
       <button className="btn primary" onClick={() => setMode('add')}>+ Nouvelle carte</button>
 
       {shown && (
+        <Portal>
         <div className="overlay" onClick={() => setShownId(null)} role="dialog" aria-label={shown.name}>
           <div className="ticket" onClick={(e) => e.stopPropagation()}>
             <div className="ticket-head" style={{ background: shown.color }}>{shown.name}</div>
@@ -198,6 +200,7 @@ export default function Fidelite({ household }: { household: Household }) {
             </div>
           </div>
         </div>
+        </Portal>
       )}
     </div>
   )
